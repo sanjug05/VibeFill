@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VibeFill — Curate Your Crowd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060B;--bg2:#0A0A14;--bg3:#101020;
+  --card:rgba(255,255,255,0.022);--card-h:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.06);--border-b:rgba(255,255,255,0.12);
+  --purple:#A855F7;--purple-g:rgba(168,85,247,0.14);
+  --pink:#EC4899;--pink-g:rgba(236,72,153,0.14);
+  --cyan:#22D3EE;--cyan-g:rgba(34,211,238,0.11);
+  --green:#4ADE80;--green-g:rgba(74,222,128,0.11);
+  --amber:#FBBF24;--amber-g:rgba(251,191,36,0.11);
+  --red:#F87171;--red-g:rgba(248,113,113,0.11);
+  --t1:#F2F2FF;--t2:rgba(242,242,255,0.52);--t3:rgba(242,242,255,0.24);--t4:rgba(242,242,255,0.10);
+  --fd:'Cormorant Garamond',serif;--fb:'DM Sans',sans-serif;--fn:'Bebas Neue',cursive;
+  --r:16px;--rs:10px;--rl:24px;--rxl:32px;--tr:all 0.24s cubic-bezier(.4,0,.2,1);
+}
+html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--fb);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow:hidden}
+#app{height:100%;position:relative;overflow:hidden}
+button{font-family:var(--fb);cursor:pointer;border:none;outline:none}
+input,textarea,select{font-family:var(--fb);outline:none;color:var(--t1)}
+
+/* AMBIENT */
+.bg-mesh{position:fixed;inset:0;pointer-events:none;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.07}
+.o1{width:480px;height:480px;background:var(--purple);top:-140px;left:-140px;animation:df 9s ease-in-out infinite}
+.o2{width:360px;height:360px;background:var(--pink);bottom:-80px;right:-80px;animation:df 11s ease-in-out infinite reverse}
+.o3{width:280px;height:280px;background:var(--cyan);top:45%;left:55%;transform:translate(-50%,-50%);animation:df 13s ease-in-out infinite 2s}
+@keyframes df{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(22px,-18px) scale(1.06)}70%{transform:translate(-16px,14px) scale(.95)}}
+
+/* SCREENS */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .32s ease,transform .32s ease;z-index:1}
+.screen.active{opacity:1;pointer-events:all;transform:translateY(0)}
+
+/* AUTH */
+#s-auth{align-items:center;justify-content:flex-end;background:var(--bg)}
+.auth-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 20px;text-align:center;position:relative;z-index:2}
+.logo-mark{width:68px;height:68px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:32px;box-shadow:0 0 50px rgba(168,85,247,.38),0 0 90px rgba(168,85,247,.12);animation:logoPulse 3s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 50px rgba(168,85,247,.38)}50%{box-shadow:0 0 70px rgba(236,72,153,.5)}}
+.logo-wordmark{font-family:var(--fd);font-size:52px;font-weight:700;letter-spacing:-1.5px;background:linear-gradient(135deg,#fff 0%,var(--purple) 55%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.logo-sub{font-size:11px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:10px}
+.auth-panel{background:rgba(10,10,20,.96);border-top:1px solid var(--border);border-radius:32px 32px 0 0;padding:28px 22px max(28px,calc(28px + env(safe-area-inset-bottom)));width:100%;max-width:540px;position:relative;z-index:2;overflow-y:auto;max-height:74vh;backdrop-filter:blur(28px)}
+.auth-tabs{display:flex;gap:5px;margin-bottom:24px;background:var(--bg3);padding:4px;border-radius:13px}
+.auth-tab{flex:1;padding:10px;border-radius:10px;background:transparent;color:var(--t3);font-size:14px;font-weight:500;transition:var(--tr)}
+.auth-tab.on{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;box-shadow:0 2px 16px rgba(168,85,247,.35)}
+
+/* FORMS */
+.f-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.f-label{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.7px;text-transform:uppercase}
+.f-input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px 15px;color:var(--t1);font-size:15px;transition:var(--tr);width:100%}
+.f-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(168,85,247,.12)}
+.f-input::placeholder{color:var(--t4)}
+textarea.f-input{resize:none}
+select.f-input{appearance:none;cursor:pointer}
+
+/* DIVIDER */
+.divdr{display:flex;align-items:center;gap:10px;margin:22px 0 16px}
+.divdr::before,.divdr::after{content:'';flex:1;height:1px;background:var(--border)}
+.divdr span{font-size:10px;color:var(--t4);letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+
+/* DEMO BUTTONS */
+.demo-btns{display:flex;flex-direction:column;gap:9px}
+.demo-btn{display:flex;align-items:center;gap:13px;padding:14px 15px;border-radius:var(--rs);border:1px solid var(--border);background:rgba(255,255,255,.018);color:var(--t1);transition:var(--tr);text-align:left;width:100%}
+.demo-btn:hover{border-color:var(--border-b);background:rgba(255,255,255,.04);transform:translateX(4px)}
+.dbico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dbico-cp{background:var(--purple-g)}.dbico-v{background:var(--pink-g)}.dbico-a{background:var(--cyan-g)}
+.db-t strong{display:block;font-size:14px;font-weight:600}
+.db-t span{font-size:11.5px;color:var(--t2)}
+.db-arr{color:var(--t4);font-size:20px;margin-left:auto;flex-shrink:0}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 22px;border-radius:var(--rs);font-size:14.5px;font-weight:600;transition:var(--tr);white-space:nowrap;border:none;cursor:pointer}
+.btn-p{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;box-shadow:0 4px 22px rgba(168,85,247,.33)}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 7px 30px rgba(168,85,247,.5)}
+.btn-p:active{transform:translateY(0)}
+.btn-g{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--t1)}
+.btn-g:hover{background:rgba(255,255,255,.07);border-color:var(--border-b)}
+.btn-o{background:transparent;border:1px solid var(--border);color:var(--t2)}
+.btn-o:hover{border-color:var(--purple);color:var(--purple)}
+.btn-sm{padding:8px 15px;font-size:12.5px;border-radius:8px}
+.btn-full{width:100%}
+.btn-danger{background:var(--red-g);border:1px solid rgba(248,113,113,.25);color:var(--red)}
+.btn-success{background:var(--green-g);border:1px solid rgba(74,222,128,.25);color:var(--green)}
+
+/* SHELL */
+.shell{display:flex;flex-direction:column;height:100%;position:relative;z-index:1}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:rgba(6,6,11,.9);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
+.hdr-logo{font-family:var(--fd);font-size:24px;font-weight:700;background:linear-gradient(135deg,#fff,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.5px}
+.hdr-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.hdr-acts{display:flex;align-items:center;gap:9px}
+.notif-btn{position:relative;width:38px;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;transition:var(--tr)}
+.notif-btn:hover{border-color:var(--border-b)}
+.nbadge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--pink);border-radius:50%;font-size:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;border:2px solid var(--bg)}
+.ava{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0}
+.ava-cp{background:linear-gradient(135deg,var(--purple),var(--pink))}
+.ava-v{background:linear-gradient(135deg,var(--pink),var(--amber))}
+.ava-a{background:linear-gradient(135deg,var(--cyan),var(--green))}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.content::-webkit-scrollbar{display:none}
+.bnav{display:flex;background:rgba(6,6,11,.97);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-top:1px solid var(--border);padding:5px 0 max(5px,env(safe-area-inset-bottom));flex-shrink:0;z-index:10}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;cursor:pointer;transition:var(--tr);font-size:9.5px;color:var(--t4);font-weight:500;letter-spacing:.3px;position:relative;user-select:none}
+.ni.on{color:var(--purple)}
+.ni-ico{font-size:20px;transition:var(--tr)}
+.ni.on .ni-ico{filter:drop-shadow(0 0 6px var(--purple));transform:translateY(-1px)}
+.ni.on::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:22px;height:3px;background:var(--purple);border-radius:3px 3px 0 0}
+
+/* CARDS */
+.card{background:rgba(255,255,255,.022);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:var(--tr)}
+.card:hover{background:rgba(255,255,255,.038);border-color:rgba(255,255,255,.1)}
+.sec{padding:18px 16px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-ttl{font-size:17px;font-weight:700}
+.sec-lnk{font-size:13px;color:var(--purple);cursor:pointer;font-weight:500}
+
+/* STATS */
+.stats-g{display:grid;gap:9px}
+.stats-2{grid-template-columns:repeat(2,1fr)}
+.stats-3{grid-template-columns:repeat(3,1fr)}
+.stats-4{grid-template-columns:repeat(4,1fr)}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 10px;text-align:center}
+.sv{font-family:var(--fn);font-size:32px;line-height:1;margin-bottom:3px}
+.sl{font-size:10.5px;color:var(--t2)}
+.sv-p{color:var(--purple)}.sv-pk{color:var(--pink)}.sv-c{color:var(--cyan)}.sv-g{color:var(--green)}.sv-a{color:var(--amber)}.sv-r{color:var(--red)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:100px;font-size:10.5px;font-weight:600;white-space:nowrap}
+.b-p{background:var(--purple-g);color:var(--purple)}
+.b-pk{background:var(--pink-g);color:var(--pink)}
+.b-c{background:var(--cyan-g);color:var(--cyan)}
+.b-g{background:var(--green-g);color:var(--green)}
+.b-a{background:var(--amber-g);color:var(--amber)}
+.b-r{background:var(--red-g);color:var(--red)}
+
+/* PROGRESS */
+.pbar{height:5px;background:var(--bg3);border-radius:100px;overflow:hidden}
+.pfill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.plabels{display:flex;justify-content:space-between;font-size:10.5px;color:var(--t2);margin-top:5px}
+
+/* CAMPAIGN CARDS */
+.ccard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:11px;transition:var(--tr);cursor:pointer}
+.ccard:hover{border-color:rgba(168,85,247,.3);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.ccard:active{transform:translateY(0)}
+.cc-hdr{height:115px;position:relative;display:flex;align-items:flex-end;padding:12px}
+.cc-bg{position:absolute;inset:0}
+.cc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,20,.95) 0%,rgba(10,10,20,.2) 60%,transparent 100%)}
+.cc-vtag{position:relative;z-index:1}
+.cc-vname{font-size:20px;font-weight:700;text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.cc-vloc{font-size:11.5px;color:rgba(255,255,255,.6);margin-top:3px}
+.cc-body{padding:14px}
+.cc-ttl{font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.3}
+.cc-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+
+/* CHIPS */
+.chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:3px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:7px 15px;border-radius:100px;border:1px solid var(--border);background:var(--bg3);color:var(--t2);font-size:12px;cursor:pointer;transition:var(--tr)}
+.chip.on{border-color:var(--purple);background:var(--purple-g);color:var(--purple)}
+
+/* LIST ROWS */
+.lr{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border)}
+.lr:last-child{border-bottom:none}
+
+/* WELCOME BANNER */
+.wb{padding:22px 16px 8px}
+.wtime{font-size:11px;color:var(--t3);letter-spacing:.6px;text-transform:uppercase}
+.wname{font-family:var(--fd);font-size:32px;font-weight:600;line-height:1.1;margin-top:3px}
+
+/* QR PASS */
+.pass-card{background:var(--bg2);border:1px solid rgba(168,85,247,.22);border-radius:26px;padding:28px 22px;text-align:center;box-shadow:0 0 60px rgba(168,85,247,.09);margin:0 14px}
+.pass-venue{font-family:var(--fd);font-size:32px;font-weight:600;background:linear-gradient(135deg,#fff,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.qr-wrap{background:#fff;border-radius:18px;padding:16px;display:inline-block;margin:18px 0;position:relative}
+.qrc{position:absolute;width:22px;height:22px}
+.qtl{top:-3px;left:-3px;border-top:3px solid var(--purple);border-left:3px solid var(--purple);border-radius:4px 0 0 0}
+.qtr{top:-3px;right:-3px;border-top:3px solid var(--purple);border-right:3px solid var(--purple);border-radius:0 4px 0 0}
+.qbl{bottom:-3px;left:-3px;border-bottom:3px solid var(--purple);border-left:3px solid var(--purple);border-radius:0 0 0 4px}
+.qbr{bottom:-3px;right:-3px;border-bottom:3px solid var(--purple);border-right:3px solid var(--purple);border-radius:0 0 4px 0}
+.pass-id{font-family:var(--fn);font-size:19px;letter-spacing:5px;color:var(--t3)}
+.ptimer{font-family:var(--fn);font-size:56px;line-height:1;color:var(--cyan);text-shadow:0 0 28px rgba(34,211,238,.55);margin:12px 0 4px}
+.ptlbl{font-size:10.5px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase}
+.pi-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;text-align:left}
+.pi-c{background:var(--bg3);border-radius:11px;padding:12px}
+.pi-l{font-size:10px;color:var(--t4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.pi-v{font-size:13.5px;font-weight:600}
+
+/* PROFILE */
+.prof-hero{background:linear-gradient(180deg,rgba(168,85,247,.1) 0%,transparent 100%);padding:32px 20px 24px;text-align:center;border-bottom:1px solid var(--border)}
+.prof-ava{width:86px;height:86px;border-radius:28px;background:linear-gradient(135deg,var(--purple),var(--pink));margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 0 36px rgba(168,85,247,.32)}
+.prof-name{font-family:var(--fd);font-size:30px;font-weight:600}
+.prof-handle{color:var(--t2);font-size:13px;margin-top:3px}
+.pstats{display:flex;justify-content:center;margin-top:20px;border-top:1px solid var(--border);padding-top:20px}
+.psi{flex:1;text-align:center;max-width:110px}
+.psdiv{width:1px;background:var(--border);align-self:stretch;margin:4px 0}
+.psn{font-family:var(--fn);font-size:30px;line-height:1}
+.psl{font-size:10.5px;color:var(--t2);margin-top:3px}
+
+/* VENUE LIVE */
+.fill-meter{background:var(--bg3);border-radius:13px;padding:4px;margin-top:14px}
+.fill-inner{border-radius:10px;background:linear-gradient(90deg,var(--purple),var(--pink));display:flex;align-items:center;padding:0 14px;font-size:12.5px;font-weight:700;color:#fff;height:36px;transition:width 2s ease;min-width:48px;white-space:nowrap}
+.cg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.cst{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:13px 8px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.cs-dot{width:7px;height:7px;border-radius:50%}
+.cs-num{font-family:var(--fn);font-size:30px;line-height:1}
+.cs-lbl{font-size:9.5px;color:var(--t2);text-align:center}
+
+/* QR SCANNER */
+.scanner-box{position:relative;background:var(--bg3);border-radius:var(--r);overflow:hidden;aspect-ratio:1;max-width:280px;margin:0 auto;border:1px solid var(--border)}
+.scan-line{position:absolute;left:20px;right:20px;height:2px;background:linear-gradient(90deg,transparent,var(--purple),var(--pink),transparent);box-shadow:0 0 12px var(--purple);animation:sl 2.2s ease-in-out infinite;z-index:2}
+@keyframes sl{0%{top:18%}50%{top:78%}100%{top:18%}}
+.sv-corners{position:absolute;inset:20px;z-index:2}
+.crnr{position:absolute;width:28px;height:28px}
+.ctop-l{top:0;left:0;border-top:3px solid var(--purple);border-left:3px solid var(--purple);border-radius:2px 0 0 0}
+.ctop-r{top:0;right:0;border-top:3px solid var(--purple);border-right:3px solid var(--purple);border-radius:0 2px 0 0}
+.cbot-l{bottom:0;left:0;border-bottom:3px solid var(--purple);border-left:3px solid var(--purple);border-radius:0 0 0 2px}
+.cbot-r{bottom:0;right:0;border-bottom:3px solid var(--purple);border-right:3px solid var(--purple);border-radius:0 0 2px 0}
+
+/* BAR CHART */
+.bchart{display:flex;align-items:flex-end;gap:7px;height:90px;padding:0 4px}
+.bi{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.b-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px}
+.b-lbl{font-size:9px;color:var(--t3)}
+
+/* ADMIN STATS */
+.adm-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 14px}
+.asc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:15px}
+.asc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.asc-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.asc-ch{font-size:10.5px;font-weight:700}
+.asc-num{font-family:var(--fn);font-size:38px;line-height:1}
+.asc-lbl{font-size:11.5px;color:var(--t2);margin-top:2px}
+
+/* ACTIVITY FEED */
+.act-itm{display:flex;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border)}
+.act-itm:last-child{border-bottom:none}
+.act-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.act-txt{font-size:13px;line-height:1.45}
+.act-time{font-size:10.5px;color:var(--t3);margin-top:4px}
+
+/* TOAST */
+#toast-host{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:calc(100% - 28px);max-width:400px}
+.toast{background:rgba(10,10,20,.98);border:1px solid var(--border);border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;backdrop-filter:blur(20px);pointer-events:all;animation:toastIn .3s ease both}
+.ts{border-color:rgba(74,222,128,.32)}.te{border-color:rgba(248,113,113,.32)}.ti{border-color:rgba(168,85,247,.32)}.tw{border-color:rgba(251,191,36,.32)}
+.t-ico{font-size:21px;flex-shrink:0}
+.t-ttl{font-size:13.5px;font-weight:600}
+.t-sub{font-size:11.5px;color:var(--t2);margin-top:2px}
+@keyframes toastIn{from{opacity:0;transform:translateY(-18px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* MODAL */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:1000;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.moverlay.open{opacity:1;pointer-events:all}
+.msheet{background:var(--bg2);border-radius:28px 28px 0 0;border-top:1px solid var(--border);padding:22px 22px max(22px,env(safe-area-inset-bottom));width:100%;max-width:600px;margin:0 auto;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .36s cubic-bezier(.4,0,.2,1);scrollbar-width:none}
+.msheet::-webkit-scrollbar{display:none}
+.moverlay.open .msheet{transform:translateY(0)}
+.mhandle{width:36px;height:4px;background:var(--border);border-radius:100px;margin:0 auto 22px}
+.mttl{font-family:var(--fd);font-size:28px;font-weight:600;margin-bottom:16px}
+
+/* PULSE */
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pls 2s infinite;flex-shrink:0}
+@keyframes pls{0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}70%{box-shadow:0 0 0 9px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+
+/* TOGGLE */
+.tgl{width:44px;height:24px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);position:relative;cursor:pointer;transition:var(--tr);flex-shrink:0}
+.tgl.on{background:var(--purple);border-color:var(--purple)}
+.tgl-t{position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:2px;left:2px;transition:var(--tr);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.tgl.on .tgl-t{left:22px}
+
+/* AUDIENCE CHIPS */
+.ach{padding:9px 18px;border-radius:100px;border:1px solid var(--border);background:var(--bg3);color:var(--t2);font-size:13px;cursor:pointer;transition:var(--tr);user-select:none}
+.ach.on{border-color:var(--purple);background:var(--purple-g);color:var(--purple)}
+
+/* SECTION DIVIDER */
+.sdiv-lbl{font-size:10.5px;font-weight:700;color:var(--t4);letter-spacing:1.2px;text-transform:uppercase;padding:6px 16px 2px}
+
+/* UTILS */
+.tg{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tg2{background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* SPLASH */
+#s-splash{align-items:center;justify-content:center;background:var(--bg);z-index:100}
+.splash-mark{width:88px;height:88px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;font-size:44px;box-shadow:0 0 60px rgba(168,85,247,.4);animation:logoPulse 2s ease-in-out infinite}
+.splash-logo{font-family:var(--fd);font-size:68px;font-weight:700;background:linear-gradient(135deg,#fff 0%,var(--purple) 55%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-2px;line-height:1}
+.splash-sub{font-size:11px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-top:14px}
+.splash-bar{width:110px;height:2px;background:var(--bg3);border-radius:100px;margin:28px auto 0;overflow:hidden}
+.splash-fill{height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:100px;animation:splashLoad 1.6s ease forwards}
+@keyframes splashLoad{to{width:100%}}
+
+/* EARN CARD */
+.earn-hero{background:linear-gradient(135deg,rgba(168,85,247,.14),rgba(236,72,153,.1));border:1px solid rgba(168,85,247,.2);border-radius:var(--r);padding:24px;text-align:center;margin-bottom:16px}
+.earn-amount{font-family:var(--fn);font-size:56px;line-height:1;color:var(--green);text-shadow:0 0 30px rgba(74,222,128,.3)}
+
+@media(min-width:768px){
+  #s-auth{justify-content:center;flex-direction:row;align-items:center;gap:48px;padding:40px}
+  .auth-hero{flex:none;padding:0;max-width:340px}
+  .auth-panel{border-radius:var(--rxl);margin-bottom:0;max-height:unset;border:1px solid var(--border)}
+  .stats-3{grid-template-columns:repeat(4,1fr)}
+  .adm-stats{grid-template-columns:repeat(4,1fr)}
+}
+@media(min-width:1024px){.adm-stats{grid-template-columns:repeat(6,1fr)}}
+</style>
+</head>
+<body>
+
+<div id="toast-host"></div>
+<div class="bg-mesh"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+
+<div id="app">
+
+<!-- SPLASH -->
+<div id="s-splash" class="screen active">
+  <div style="text-align:center;animation:fadeUp .8s ease both">
+    <div class="splash-mark">✦</div>
+    <div class="splash-logo">VibeFill</div>
+    <div class="splash-sub">Curate Your Crowd. Own the Night.</div>
+    <div class="splash-bar"><div class="splash-fill"></div></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="s-auth" class="screen">
+  <div class="auth-hero">
+    <div class="logo-mark">✦</div>
+    <div class="logo-wordmark">VibeFill</div>
+    <div class="logo-sub">Curate Your Crowd. Own the Night.</div>
+  </div>
+  <div class="auth-panel">
+    <div class="auth-tabs">
+      <button class="auth-tab on" onclick="authTab('login',this)">Sign In</button>
+      <button class="auth-tab" onclick="authTab('signup',this)">Create Account</button>
+    </div>
+    <div id="af-login">
+      <div class="f-group"><label class="f-label">Email</label><input type="email" class="f-input" placeholder="your@email.com"></div>
+      <div class="f-group"><label class="f-label">Password</label><input type="password" class="f-input" placeholder="••••••••"></div>
+      <button class="btn btn-p btn-full" style="margin-top:6px" onclick="toast('✅','Welcome back!','Sign in successful','s');setTimeout(()=>nav('role'),700)">Continue →</button>
+      <div style="text-align:center;margin-top:14px;font-size:12.5px;color:var(--t3)">Forgot password? <span style="color:var(--purple);cursor:pointer">Reset here</span></div>
+    </div>
+    <div id="af-signup" style="display:none">
+      <div class="f-group"><label class="f-label">Full Name</label><input type="text" class="f-input" placeholder="Your Name"></div>
+      <div class="f-group"><label class="f-label">Email</label><input type="email" class="f-input" placeholder="your@email.com"></div>
+      <div class="f-group"><label class="f-label">Password</label><input type="password" class="f-input" placeholder="Create a strong password"></div>
+      <button class="btn btn-p btn-full" style="margin-top:6px" onclick="toast('🎉','Account created!','Welcome to VibeFill','s');setTimeout(()=>nav('role'),700)">Create Account →</button>
+    </div>
+    <div class="divdr"><span>No Signup Needed · Demo Mode</span></div>
+    <div class="demo-btns">
+      <button class="demo-btn" onclick="demo('cp')"><div class="dbico dbico-cp">👤</div><div class="db-t"><strong>Crowd Partner</strong><span>Browse campaigns, earn & track sessions</span></div><div class="db-arr">›</div></button>
+      <button class="demo-btn" onclick="demo('venue')"><div class="dbico dbico-v">🏛️</div><div class="db-t"><strong>Venue / Club Owner</strong><span>Create campaigns & manage your crowd</span></div><div class="db-arr">›</div></button>
+      <button class="demo-btn" onclick="demo('admin')"><div class="dbico dbico-a">⚡</div><div class="db-t"><strong>Admin Console</strong><span>Full platform analytics & controls</span></div><div class="db-arr">›</div></button>
+    </div>
+  </div>
+</div>
+
+<!-- ROLE SELECT -->
+<div id="s-role" class="screen" style="align-items:center;justify-content:center;padding:28px;background:var(--bg)">
+  <div style="max-width:380px;width:100%;text-align:center;position:relative;z-index:2">
+    <div style="font-family:var(--fd);font-size:36px;font-weight:600;margin-bottom:8px">Welcome aboard 🌙</div>
+    <p style="color:var(--t2);font-size:13.5px;margin-bottom:32px">Choose your role on the platform</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <button class="demo-btn" style="border-radius:var(--r);padding:18px" onclick="demo('cp')"><div class="dbico dbico-cp" style="width:48px;height:48px;font-size:24px">👤</div><div class="db-t" style="text-align:left"><strong style="font-size:15px">Crowd Partner</strong><span>Get rewarded to create vibe at venues</span></div><div class="db-arr">›</div></button>
+      <button class="demo-btn" style="border-radius:var(--r);padding:18px" onclick="demo('venue')"><div class="dbico dbico-v" style="width:48px;height:48px;font-size:24px">🏛️</div><div class="db-t" style="text-align:left"><strong style="font-size:15px">Venue / Club Owner</strong><span>Fill your venue with curated crowd</span></div><div class="db-arr">›</div></button>
+      <button class="demo-btn" style="border-radius:var(--r);padding:18px" onclick="demo('admin')"><div class="dbico dbico-a" style="width:48px;height:48px;font-size:24px">⚡</div><div class="db-t" style="text-align:left"><strong style="font-size:15px">Admin</strong><span>Platform management & analytics</span></div><div class="db-arr">›</div></button>
+    </div>
+    <button class="btn btn-o btn-full" style="margin-top:20px" onclick="nav('auth')">← Back to Login</button>
+  </div>
+</div>
+
+<!-- CROWD PARTNER -->
+<div id="s-cp" class="screen">
+  <div class="shell">
+    <div class="hdr">
+      <div><div class="hdr-logo">VibeFill</div><div class="hdr-sub" style="color:var(--purple)">Crowd Partner</div></div>
+      <div class="hdr-acts">
+        <div class="notif-btn" onclick="openNotif()">🔔<span class="nbadge">3</span></div>
+        <div class="ava ava-cp" onclick="cpTab('profile')">A</div>
+      </div>
+    </div>
+    <div class="content" id="cp-c"></div>
+    <div class="bnav">
+      <div class="ni on" id="cpn-home" onclick="cpTab('home')"><div class="ni-ico">🏠</div>Home</div>
+      <div class="ni" id="cpn-explore" onclick="cpTab('explore')"><div class="ni-ico">🔍</div>Explore</div>
+      <div class="ni" id="cpn-pass" onclick="cpTab('pass')"><div class="ni-ico">🎫</div>My Pass</div>
+      <div class="ni" id="cpn-earn" onclick="cpTab('earn')"><div class="ni-ico">💰</div>Earn</div>
+      <div class="ni" id="cpn-profile" onclick="cpTab('profile')"><div class="ni-ico">👤</div>Profile</div>
+    </div>
+  </div>
+</div>
+
+<!-- VENUE -->
+<div id="s-venue" class="screen">
+  <div class="shell">
+    <div class="hdr">
+      <div><div class="hdr-logo">VibeFill</div><div class="hdr-sub" style="color:var(--pink)">Venue Dashboard</div></div>
+      <div class="hdr-acts">
+        <div class="notif-btn" onclick="openNotif()">🔔<span class="nbadge">2</span></div>
+        <div class="ava ava-v" onclick="vTab('profile')">N</div>
+      </div>
+    </div>
+    <div class="content" id="v-c"></div>
+    <div class="bnav">
+      <div class="ni on" id="vn-dashboard" onclick="vTab('dashboard')"><div class="ni-ico">📊</div>Dashboard</div>
+      <div class="ni" id="vn-create" onclick="vTab('create')"><div class="ni-ico">➕</div>Create</div>
+      <div class="ni" id="vn-live" onclick="vTab('live')"><div class="ni-ico">📡</div>Live</div>
+      <div class="ni" id="vn-analytics" onclick="vTab('analytics')"><div class="ni-ico">📈</div>Analytics</div>
+      <div class="ni" id="vn-profile" onclick="vTab('profile')"><div class="ni-ico">🏛️</div>Venue</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="s-admin" class="screen">
+  <div class="shell">
+    <div class="hdr">
+      <div><div class="hdr-logo">VibeFill</div><div class="hdr-sub" style="color:var(--cyan)">Admin Console</div></div>
+      <div class="hdr-acts">
+        <div class="notif-btn">🔔</div>
+        <div class="ava ava-a">AD</div>
+      </div>
+    </div>
+    <div class="content" id="a-c"></div>
+    <div class="bnav">
+      <div class="ni on" id="an-overview" onclick="aTab('overview')"><div class="ni-ico">📊</div>Overview</div>
+      <div class="ni" id="an-users" onclick="aTab('users')"><div class="ni-ico">👥</div>Users</div>
+      <div class="ni" id="an-venues" onclick="aTab('venues')"><div class="ni-ico">🏛️</div>Venues</div>
+      <div class="ni" id="an-campaigns" onclick="aTab('campaigns')"><div class="ni-ico">📋</div>Campaigns</div>
+      <div class="ni" id="an-activity" onclick="aTab('activity')"><div class="ni-ico">⚡</div>Activity</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#app -->
+
+<!-- MODAL SHEET -->
+<div class="moverlay" id="moverlay" onclick="closeMod(event)">
+  <div class="msheet" id="msheet"><div class="mhandle"></div><div id="mbody"></div></div>
+</div>
+
+<script>
+/* ===================================================================
+   MOCK DATA
+=================================================================== */
+const MK = {
+  campaigns: [
+    { id:'c1', venue:'Noir Lounge',   loc:'Connaught Place, Delhi', dist:'1.2 km', title:'Friday Night Vibes — Couples & Ladies Edition', aud:'Couples / Ladies', req:20, joined:14, ci:8,  active:6,  slot:'9 PM – 1 AM',  stay:'90 mins', offer:'2 Complimentary Cocktails', oico:'🍹', status:'live',     grad:'linear-gradient(135deg,#160828,#3b1469)', tags:['Couples','Ladies','DJ Night'], rating:4.8, pay:'₹300' },
+    { id:'c2', venue:'The Penthouse', loc:'Aerocity, Delhi',        dist:'3.4 km', title:'Saturday Social — Rooftop Edition',                aud:'Mixed Groups',    req:30, joined:22, ci:0,  active:0,  slot:'8 PM – 12 AM', stay:'60 mins', offer:'30% Off on Food',           oico:'🍽️', status:'upcoming', grad:'linear-gradient(135deg,#081628,#0d3a52)', tags:['Mixed','Rooftop','Social'],   rating:4.6, pay:'₹200' },
+    { id:'c3', venue:'KAMA',          loc:'Hauz Khas Village',      dist:'4.7 km', title:'Sunday Sundowner — Chilled Vibes',                  aud:'Ladies / Couples',req:15, joined:15, ci:12, active:10, slot:'5 PM – 9 PM',  stay:'45 mins', offer:'Complimentary Welcome Drink', oico:'🥂', status:'live',     grad:'linear-gradient(135deg,#1a0810,#520d25)', tags:['Ladies','Couples','Sundowner'],rating:4.9, pay:'₹150' },
+    { id:'c4', venue:'Skyline Bar',   loc:'Sector 29, Gurgaon',     dist:'8.1 km', title:'Midweek Mixer — Wednesday Social',                  aud:'Mixed Groups',    req:25, joined:5,  ci:0,  active:0,  slot:'7 PM – 11 PM', stay:'60 mins', offer:'Unlimited Starters + 1 Drink',oico:'🍻', status:'upcoming', grad:'linear-gradient(135deg,#081408,#0b4014)', tags:['Mixed','Weekday','Casual'],   rating:4.4, pay:'₹250' }
+  ],
+  users: [
+    { id:'u1', name:'Aanya Sharma', handle:'@aanya_s', gender:'F', sessions:24, rating:4.8, status:'active',  ava:'👩', joined:'Jan 2025', city:'Delhi'   },
+    { id:'u2', name:'Rohan Mehra',  handle:'@rohan_m', gender:'M', sessions:18, rating:4.6, status:'active',  ava:'👨', joined:'Feb 2025', city:'Delhi'   },
+    { id:'u3', name:'Priya Kapoor', handle:'@priya_k', gender:'F', sessions:31, rating:4.9, status:'active',  ava:'👩', joined:'Dec 2024', city:'Noida'   },
+    { id:'u4', name:'Kabir Singh',  handle:'@kabir_s', gender:'M', sessions:6,  rating:3.9, status:'pending', ava:'🧑', joined:'Apr 2025', city:'Gurgaon' },
+    { id:'u5', name:'Riya Verma',   handle:'@riya_v',  gender:'F', sessions:0,  rating:0,   status:'blocked', ava:'👩', joined:'Mar 2025', city:'Delhi'   },
+    { id:'u6', name:'Arjun Nair',   handle:'@arjun_n', gender:'M', sessions:12, rating:4.4, status:'active',  ava:'👨', joined:'Feb 2025', city:'Delhi'   }
+  ],
+  venues: [
+    { id:'v1', name:'Noir Lounge',   owner:'Rahul Gupta',  loc:'Connaught Place', camps:12, rating:4.7, status:'active',  ver:true  },
+    { id:'v2', name:'The Penthouse', owner:'Alisha Roy',   loc:'Aerocity',        camps:8,  rating:4.5, status:'active',  ver:true  },
+    { id:'v3', name:'KAMA',          owner:'Dev Malhotra', loc:'Hauz Khas',       camps:20, rating:4.9, status:'active',  ver:true  },
+    { id:'v4', name:'Skyline Bar',   owner:'Neha Bhatia',  loc:'Gurgaon Sec 29',  camps:5,  rating:4.2, status:'pending', ver:false },
+    { id:'v5', name:'Pulp Society',  owner:'Veer Kapoor',  loc:'Vasant Kunj',     camps:3,  rating:4.3, status:'active',  ver:true  }
+  ],
+  notifs: [
+    { ico:'✅', ttl:'Campaign Approved',    txt:'Your application for "Noir Lounge Friday Night" has been approved!', time:'2 min ago',  type:'s' },
+    { ico:'📡', ttl:'Check-in Confirmed',   txt:'You\'ve successfully checked into The Penthouse. Session started!',  time:'1 hr ago',   type:'i' },
+    { ico:'🏆', ttl:'Badge Earned!',        txt:'Congrats! You\'ve earned the "Night Owl" badge for 10+ night sessions.', time:'Yesterday', type:'s' },
+    { ico:'🎯', ttl:'New Campaign Near You',txt:'KAMA just launched a Sunday Sundowner — 3 slots left!',               time:'2 hrs ago',  type:'i' }
+  ],
+  history: [
+    { venue:'Noir Lounge',   date:'Jun 6',  dur:'2h 15m', rating:5, offer:'2 Cocktails',     earn:'₹300' },
+    { venue:'KAMA',          date:'May 31', dur:'1h 45m', rating:5, offer:'Welcome Drink',    earn:'₹150' },
+    { venue:'The Penthouse', date:'May 24', dur:'1h 20m', rating:4, offer:'30% Off Food',     earn:'₹200' },
+    { venue:'Skyline Bar',   date:'May 17', dur:'2h 05m', rating:4, offer:'Starters + Drink', earn:'₹250' }
+  ],
+  badges: ['🌙 Night Owl','⭐ Top Rated','🔥 7-Day Streak','💎 Premium Partner','🎯 Reliable'],
+  activity: [
+    { ico:'👤', bg:'rgba(168,85,247,.15)', txt:'<strong>Aanya Sharma</strong> joined "Noir Lounge Friday Night"',         time:'30s ago'  },
+    { ico:'✅', bg:'rgba(74,222,128,.12)', txt:'Check-in confirmed for <strong>Rohan Mehra</strong> at The Penthouse',    time:'2m ago'   },
+    { ico:'🏛️', bg:'rgba(236,72,153,.12)', txt:'New venue <strong>"Pulp Society"</strong> submitted for approval',        time:'5m ago'   },
+    { ico:'📋', bg:'rgba(34,211,238,.12)', txt:'Campaign <strong>"KAMA Sundowner"</strong> reached 100% fill rate',       time:'10m ago'  },
+    { ico:'⚠️', bg:'rgba(248,113,113,.12)',txt:'<strong>Riya Verma</strong> flagged — 3rd consecutive no-show',           time:'18m ago'  },
+    { ico:'🎯', bg:'rgba(251,191,36,.12)', txt:'<strong>Priya Kapoor</strong> earned "Top Rated" badge (4.9 avg)',         time:'25m ago'  },
+    { ico:'💰', bg:'rgba(74,222,128,.12)', txt:'Weekly payouts processed: <strong>₹42,000 total</strong>',                time:'1h ago'   },
+    { ico:'📊', bg:'rgba(168,85,247,.15)', txt:'Platform milestone: <strong>500 sessions</strong> completed!',            time:'2h ago'   }
+  ],
+  weekData:   [38, 52, 44, 68, 91, 75, 83],
+  weekLabels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+};
+
+/* ===================================================================
+   STATE
+=================================================================== */
+const S = { screen:'auth', role:null, timerSecs:3456, timerInt:null };
+
+/* ===================================================================
+   NAVIGATION
+=================================================================== */
+function nav(s) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('s-' + s);
+  if (el) { el.classList.add('active'); S.screen = s; }
+}
+
+function demo(role) {
+  S.role = role;
+  nav(role === 'cp' ? 'cp' : role === 'venue' ? 'venue' : 'admin');
+  setTimeout(() => {
+    if (role === 'cp')    { cpTab('home');      toast('👋', 'Welcome, Aanya!',     'Demo mode — explore freely', 'i'); }
+    if (role === 'venue') { vTab('dashboard');  toast('🏛️', 'Noir Lounge Live',    'Venue demo loaded', 'i'); }
+    if (role === 'admin') { aTab('overview');   toast('⚡', 'Admin Console',       'Platform overview loaded', 'i'); }
+  }, 300);
+}
+
+function authTab(t, btn) {
+  document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('af-login').style.display  = t === 'login'  ? '' : 'none';
+  document.getElementById('af-signup').style.display = t === 'signup' ? '' : 'none';
+}
+
+/* ===================================================================
+   TOAST
+=================================================================== */
+function toast(ico, ttl, sub, type = 'i') {
+  const host = document.getElementById('toast-host');
+  const t = document.createElement('div');
+  t.className = 'toast t' + type;
+  t.innerHTML = `<div class="t-ico">${ico}</div><div><div class="t-ttl">${ttl}</div><div class="t-sub">${sub}</div></div>`;
+  host.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastIn .3s ease reverse both'; setTimeout(() => t.remove(), 320); }, 3200);
+}
+
+/* ===================================================================
+   MODAL
+=================================================================== */
+function openMod(html) {
+  document.getElementById('mbody').innerHTML = html;
+  document.getElementById('moverlay').classList.add('open');
+}
+function closeMod(e) { if (e.target === document.getElementById('moverlay')) closeM(); }
+function closeM()    { document.getElementById('moverlay').classList.remove('open'); }
+
+/* ===================================================================
+   CHIP FILTER
+=================================================================== */
+function fc(el) {
+  el.closest('.chips').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ===================================================================
+   ANIMATED COUNTERS
+=================================================================== */
+function animCounters() {
+  document.querySelectorAll('.anim-num').forEach(el => {
+    const target = parseFloat(el.dataset.t);
+    if (isNaN(target)) return;
+    const dec = parseInt(el.dataset.d || 0), dur = 1100, start = performance.now();
+    const step = ts => {
+      const p = Math.min((ts - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = dec ? (target * ease).toFixed(dec) : Math.round(target * ease);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+/* ===================================================================
+   CROWD PARTNER TABS
+=================================================================== */
+function cpTab(t) {
+  ['home','explore','pass','earn','profile'].forEach(k => {
+    const n = document.getElementById('cpn-' + k);
+    if (n) n.classList.toggle('on', k === t);
+  });
+  const c = document.getElementById('cp-c');
+  c.innerHTML = ''; c.scrollTop = 0;
+  ({ home: cpHome, explore: cpExplore, pass: cpPass, earn: cpEarn, profile: cpProfile })[t]?.(c);
+}
+
+/* ── CP HOME ── */
+function cpHome(el) {
+  const h = new Date().getHours();
+  const gr = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+  el.innerHTML = `
+  <div class="wb">
+    <div class="wtime">${gr}</div>
+    <div class="wname">Aanya Sharma ✨</div>
+    <p style="color:var(--t2);font-size:12.5px;margin-top:5px">3 live campaigns near you tonight</p>
+  </div>
+  <div class="sec" style="padding-bottom:0">
+    <div class="stats-g stats-3">
+      <div class="sc"><div class="sv sv-p anim-num" data-t="4.8" data-d="1">4.8</div><div class="sl">Rep Score</div></div>
+      <div class="sc"><div class="sv sv-pk anim-num" data-t="24">24</div><div class="sl">Sessions</div></div>
+      <div class="sc"><div class="sv sv-g anim-num" data-t="96">96</div><div class="sl">Reliability%</div></div>
+    </div>
+  </div>
+  <div style="padding:14px 16px 8px">
+    <div class="chips">
+      ${['All','🔴 Live','💑 Couples','👩 Ladies','👥 Groups'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+  </div>
+  <div class="sec" style="padding-top:10px">
+    <div class="sec-hdr"><div class="sec-ttl">📍 Nearby Campaigns</div><div class="sec-lnk" onclick="cpTab('explore')">See All</div></div>
+    ${MK.campaigns.map(c => ccardHTML(c)).join('')}
+  </div>`;
+  setTimeout(animCounters, 100);
+}
+
+/* ── CP EXPLORE ── */
+function cpExplore(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-ttl" style="margin-bottom:14px">Explore Campaigns</div>
+    <input type="text" class="f-input" placeholder="🔍  Search venues or campaigns..." style="margin-bottom:14px">
+    <div class="chips" style="margin-bottom:18px">
+      ${['All','Delhi NCR','Tonight','Weekend','Couples','Ladies','Groups','Top Rated'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+    ${MK.campaigns.map(c => ccardHTML(c)).join('')}
+    <div style="text-align:center;padding:20px 0;color:var(--t3);font-size:12.5px">✦ All nearby campaigns shown ✦</div>
+  </div>`;
+}
+
+/* ── CAMPAIGN CARD HTML ── */
+function ccardHTML(c) {
+  const fp = Math.round((c.joined / c.req) * 100), sl = c.req - c.joined, live = c.status === 'live';
+  return `<div class="ccard" onclick="openCamp('${c.id}')">
+    <div class="cc-hdr">
+      <div class="cc-bg" style="background:${c.grad}"></div>
+      <div class="cc-ov"></div>
+      <div class="cc-vtag" style="position:relative;z-index:1">
+        <div class="cc-vname">${c.venue}</div>
+        <div class="cc-vloc">📍 ${c.loc} · ${c.dist}</div>
+      </div>
+      ${live ? `<div class="badge b-g" style="position:absolute;top:11px;right:11px;z-index:2"><span class="pulse" style="width:6px;height:6px;margin-right:4px"></span>LIVE</div>` : `<div class="badge b-a" style="position:absolute;top:11px;right:11px;z-index:2">Upcoming</div>`}
+    </div>
+    <div class="cc-body">
+      <div class="cc-ttl">${c.title}</div>
+      <div class="cc-meta">
+        <span class="badge b-p">👥 ${c.aud}</span>
+        <span class="badge b-c">⏰ ${c.slot}</span>
+        <span class="badge b-pk">⏱ ${c.stay} min</span>
+        <span class="badge b-g">💰 ${c.pay}</span>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:${fp}%"></div></div>
+      <div class="plabels"><span>${c.joined}/${c.req} joined</span><span style="color:${sl<=3?'var(--red)':'var(--t2)'}">${sl} slots left</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--t2)"><span style="font-size:19px">${c.oico}</span>${c.offer}</div>
+        <button class="btn btn-p btn-sm" onclick="event.stopPropagation();joinC('${c.id}')">${live?'Join Now':'Apply'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── CP PASS ── */
+function cpPass(el) {
+  const pid = 'VF-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+  el.innerHTML = `
+  <div style="padding:22px 0 10px;text-align:center">
+    <div style="font-family:var(--fd);font-size:22px;font-weight:600">Active Entry Pass</div>
+    <div style="color:var(--t2);font-size:13px;margin-top:4px">Session live · Noir Lounge</div>
+  </div>
+  <div class="pass-card">
+    <div class="pass-venue">Noir Lounge</div>
+    <div style="color:var(--t2);font-size:13px;margin-top:3px">Connaught Place, New Delhi</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px">
+      <span class="pulse"></span>
+      <span style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:.8px;text-transform:uppercase">Session Active</span>
+    </div>
+    <div class="qr-wrap" id="qr-host" style="min-width:192px;min-height:192px">
+      <div class="qrc qtl"></div><div class="qrc qtr"></div>
+      <div class="qrc qbl"></div><div class="qrc qbr"></div>
+    </div>
+    <div class="pass-id">${pid}</div>
+    <div class="ptlbl" style="margin-top:14px">Time Remaining</div>
+    <div class="ptimer" id="p-tmr">--:--</div>
+    <div class="pi-g">
+      <div class="pi-c"><div class="pi-l">Check-in</div><div class="pi-v">9:43 PM</div></div>
+      <div class="pi-c"><div class="pi-l">Min Stay</div><div class="pi-v">90 mins</div></div>
+      <div class="pi-c"><div class="pi-l">Offer</div><div class="pi-v">🍹 2 Cocktails</div></div>
+      <div class="pi-c"><div class="pi-l">Status</div><div class="pi-v" style="color:var(--green)">✓ Valid</div></div>
+    </div>
+  </div>
+  <div style="padding:18px 16px 28px;display:flex;flex-direction:column;gap:10px">
+    <button class="btn btn-p btn-full" onclick="toast('📤','Pass Shared!','Entry QR copied to clipboard','s')">📤 Share Pass</button>
+    <button class="btn btn-g btn-full" onclick="toast('❓','Support','Chat with VibeFill support','i')">❓ Need Help?</button>
+  </div>`;
+  drawQR(pid);
+  startTimer();
+}
+
+function drawQR(pid) {
+  setTimeout(() => {
+    const host = document.getElementById('qr-host');
+    if (!host) return;
+    const size = 160;
+    const cv = document.createElement('canvas');
+    cv.width = size; cv.height = size;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);
+    const cs = size / 21;
+    ctx.fillStyle = '#1a0828';
+    // QR-like pattern blocks
+    [[0,0,7,7],[14,0,7,7],[0,14,7,7],[2,2,3,3],[16,2,3,3],[2,16,3,3],
+     [9,0,1,3],[0,9,3,1],[11,4,1,3],[4,11,3,1],[8,8,5,5],[10,10,1,1],
+     [7,9,1,4],[9,7,4,1],[14,14,3,1],[17,14,1,3],[14,17,3,1]
+    ].forEach(([x,y,w,h]) => ctx.fillRect(x*cs+4, y*cs+4, w*cs, h*cs));
+    host.appendChild(cv);
+  }, 80);
+}
+
+function startTimer() {
+  if (S.timerInt) clearInterval(S.timerInt);
+  S.timerInt = setInterval(() => {
+    S.timerSecs = Math.max(0, S.timerSecs - 1);
+    const m = Math.floor(S.timerSecs / 60), s = S.timerSecs % 60;
+    const e = document.getElementById('p-tmr');
+    if (e) e.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    else clearInterval(S.timerInt);
+  }, 1000);
+}
+
+/* ── CP EARN ── */
+function cpEarn(el) {
+  el.innerHTML = `
+  <div class="wb"><div class="wtime">Earnings Overview</div><div class="wname">This Month 💰</div></div>
+  <div class="sec">
+    <div class="earn-hero">
+      <div style="font-size:11px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Total Earned</div>
+      <div class="earn-amount anim-num" data-t="4200">₹0</div>
+      <div style="font-size:12.5px;color:var(--t2);margin-top:4px">June 2025 · 14 sessions</div>
+      <div style="display:flex;justify-content:center;gap:10px;margin-top:16px">
+        <span class="badge b-g">↑ 32% vs last month</span>
+        <span class="badge b-p">Active Earner</span>
+      </div>
+    </div>
+    <div class="stats-g stats-2" style="margin-bottom:16px">
+      <div class="sc"><div class="sv sv-p">₹300</div><div class="sl">Highest Session</div></div>
+      <div class="sc"><div class="sv sv-c">₹214</div><div class="sl">Avg per Session</div></div>
+      <div class="sc"><div class="sv sv-g">₹650</div><div class="sl">This Week</div></div>
+      <div class="sc"><div class="sv sv-a">₹1,400</div><div class="sl">Pending Payout</div></div>
+    </div>
+    <div class="sec-hdr"><div class="sec-ttl" style="font-size:15px">Session Earnings</div><button class="btn btn-success btn-sm" onclick="toast('💳','Withdrawal Initiated','₹1,400 sent to HDFC ····3842','s')">Withdraw</button></div>
+    <div class="card">
+      ${MK.history.map(h => `
+      <div class="lr">
+        <div style="width:40px;height:40px;border-radius:11px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🏛️</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">${h.venue}</div>
+          <div style="font-size:11.5px;color:var(--t2)">${h.date} · ${h.dur}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:var(--fn);font-size:22px;color:var(--green)">${h.earn}</div>
+          <div style="font-size:10px;color:var(--t3)">Paid ✓</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:16px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)">
+      <div style="font-weight:700;margin-bottom:6px;font-size:14px">💳 Payout Method</div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:14px">HDFC Bank ····3842 · Auto payout every Monday</div>
+      <button class="btn btn-o btn-full btn-sm" onclick="toast('💳','Payout Settings','Manage linked bank account','i')">Manage Payout Settings</button>
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+  setTimeout(animCounters, 100);
+}
+
+/* ── CP PROFILE ── */
+function cpProfile(el) {
+  el.innerHTML = `
+  <div class="prof-hero">
+    <div class="prof-ava">👩</div>
+    <div class="prof-name">Aanya Sharma</div>
+    <div class="prof-handle">@aanya_s · ♀ Female · Delhi NCR</div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px">
+      ${MK.badges.map(b => `<span class="badge b-p">${b}</span>`).join('')}
+    </div>
+    <div class="pstats">
+      <div class="psi"><div class="psn sv-p">4.8</div><div class="psl">Rating</div></div>
+      <div class="psdiv"></div>
+      <div class="psi"><div class="psn sv-pk">24</div><div class="psl">Sessions</div></div>
+      <div class="psdiv"></div>
+      <div class="psi"><div class="psn sv-g">96%</div><div class="psl">Reliable</div></div>
+      <div class="psdiv"></div>
+      <div class="psi"><div class="psn sv-a">₹4.2k</div><div class="psl">Earned</div></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr"><div class="sec-ttl">Session History</div><div class="sec-lnk" onclick="cpTab('earn')">View All</div></div>
+    <div class="card">
+      ${MK.history.map(h => `
+      <div class="lr">
+        <div style="width:40px;height:40px;border-radius:11px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🏛️</div>
+        <div style="flex:1"><div style="font-weight:600;font-size:14px">${h.venue}</div><div style="font-size:11.5px;color:var(--t2)">${h.date} · ${h.dur} · ${h.offer}</div></div>
+        <div style="text-align:right">
+          <div style="color:var(--amber);font-size:13px">${'⭐'.repeat(h.rating)}</div>
+          <div class="badge b-g" style="margin-top:5px">✓ Done</div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="sec" style="padding-top:4px">
+    <div class="sec-ttl" style="margin-bottom:14px">Settings</div>
+    <div class="card">
+      ${[
+        { ico:'📝', lbl:'Edit Profile',     sub:'Update your info & photos' },
+        { ico:'🔔', lbl:'Notifications',    sub:'Manage alerts & updates' },
+        { ico:'🔒', lbl:'Privacy & Safety', sub:'Control your visibility' },
+        { ico:'💳', lbl:'Payouts & Wallet', sub:'Linked bank account' },
+        { ico:'⭐', lbl:'My Badges',        sub:'View earned achievements' },
+        { ico:'❓', lbl:'Help & Support',   sub:'FAQs & contact us' },
+        { ico:'🚪', lbl:'Sign Out',         sub:'Return to login', red:true }
+      ].map(it => `
+      <div class="lr" style="cursor:pointer" onclick="${it.red ? "nav('auth')" : `toast('🔧','${it.lbl}','Available in full version','i')`}">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px">${it.ico}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:500${it.red?';color:var(--red)':''}">${it.lbl}</div><div style="font-size:11.5px;color:var(--t2)">${it.sub}</div></div>
+        <span style="color:var(--t4);font-size:18px">›</span>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div style="height:24px"></div>`;
+}
+
+/* ===================================================================
+   CAMPAIGN DETAIL MODAL
+=================================================================== */
+function openCamp(id) {
+  const c = MK.campaigns.find(x => x.id === id);
+  if (!c) return;
+  const fp = Math.round((c.joined / c.req) * 100);
+  openMod(`
+  <div style="height:140px;border-radius:16px;overflow:hidden;margin-bottom:20px;position:relative">
+    <div style="background:${c.grad};position:absolute;inset:0"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,20,.92),transparent 60%)"></div>
+    <div style="position:absolute;bottom:14px;left:16px">
+      <div style="font-size:23px;font-weight:700">${c.venue}</div>
+      <div style="font-size:12.5px;color:rgba(255,255,255,.65)">📍 ${c.loc} · ${c.dist}</div>
+    </div>
+    ${c.status==='live'?`<div class="badge b-g" style="position:absolute;top:12px;right:12px"><span class="pulse" style="width:6px;height:6px;margin-right:4px"></span>LIVE</div>`:''}
+  </div>
+  <div class="mttl">${c.title}</div>
+  <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px">
+    <span class="badge b-p">👥 ${c.aud}</span>
+    <span class="badge b-c">⏰ ${c.slot}</span>
+    <span class="badge b-pk">⏱ Min ${c.stay}</span>
+    <span class="badge b-g">💰 ${c.pay}</span>
+    <span class="badge b-a">⭐ ${c.rating}</span>
+  </div>
+  <div style="background:var(--bg3);border-radius:var(--r);padding:16px;margin-bottom:16px">
+    <div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-weight:700">Crowd Fill Progress</div>
+    <div class="pbar" style="height:8px"><div class="pfill" style="width:${fp}%"></div></div>
+    <div class="plabels" style="margin-top:7px"><span>${c.joined} joined</span><span>${c.req} needed · ${c.req - c.joined} slots left</span></div>
+  </div>
+  <div style="background:var(--bg3);border-radius:var(--r);padding:16px;margin-bottom:20px">
+    <div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-weight:700">Complimentary Offer</div>
+    <div style="display:flex;align-items:center;gap:13px">
+      <span style="font-size:32px">${c.oico}</span>
+      <div><div style="font-size:15px;font-weight:700">${c.offer}</div><div style="font-size:12px;color:var(--t2);margin-top:3px">Provided after minimum stay is completed</div></div>
+    </div>
+  </div>
+  <button class="btn btn-p btn-full" style="margin-bottom:10px" onclick="joinC('${c.id}');closeM()">${c.status==='live'?'🚀 Join Now':'📋 Apply for Campaign'}</button>
+  <button class="btn btn-o btn-full" onclick="closeM()">Maybe Later</button>`);
+}
+
+function joinC(id) {
+  const c = MK.campaigns.find(x => x.id === id);
+  if (!c) return;
+  c.joined = Math.min(c.joined + 1, c.req);
+  toast('🎉', `Applied: ${c.venue}!`, 'Confirmation sent — your pass is ready', 's');
+  setTimeout(() => { if (S.role === 'cp') cpTab('pass'); }, 1500);
+}
+
+/* ===================================================================
+   NOTIFICATIONS MODAL
+=================================================================== */
+function openNotif() {
+  openMod(`
+  <div class="mttl">Notifications</div>
+  ${MK.notifs.map(n => `
+  <div style="display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--border)">
+    <div style="width:44px;height:44px;border-radius:13px;background:${n.type==='s'?'var(--green-g)':'var(--purple-g)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${n.ico}</div>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:14px">${n.ttl}</div>
+      <div style="font-size:12.5px;color:var(--t2);margin-top:4px;line-height:1.5">${n.txt}</div>
+      <div style="font-size:10.5px;color:var(--t4);margin-top:5px">${n.time}</div>
+    </div>
+  </div>`).join('')}
+  <button class="btn btn-o btn-full" style="margin-top:18px" onclick="closeM()">Close</button>`);
+}
+
+/* ===================================================================
+   VENUE TABS
+=================================================================== */
+function vTab(t) {
+  ['dashboard','create','live','analytics','profile'].forEach(k => {
+    const n = document.getElementById('vn-' + k);
+    if (n) n.classList.toggle('on', k === t);
+  });
+  const c = document.getElementById('v-c');
+  c.innerHTML = ''; c.scrollTop = 0;
+  ({ dashboard: vDash, create: vCreate, live: vLive, analytics: vAnalytics, profile: vProfile })[t]?.(c);
+}
+
+/* ── VENUE DASHBOARD ── */
+function vDash(el) {
+  el.innerHTML = `
+  <div class="wb"><div class="wtime">Tonight's Snapshot</div><div class="wname">Noir Lounge 🌙</div></div>
+  <div class="sec" style="padding-bottom:6px">
+    <div class="card" style="padding:18px;margin-bottom:15px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div>
+          <div style="font-size:16.5px;font-weight:700">Friday Night Vibes</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:3px">Tonight · 9 PM – 1 AM · Couples + Ladies</div>
+        </div>
+        <span class="badge b-g"><span class="pulse" style="width:6px;height:6px;margin-right:4px"></span>LIVE</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:13px;color:var(--t2)">Crowd Fill Rate</span>
+        <span style="font-weight:700;color:var(--purple)">14 / 20 &nbsp;·&nbsp; 70%</span>
+      </div>
+      <div class="fill-meter"><div class="fill-inner" style="width:70%">14 joined</div></div>
+      <div class="cg">
+        <div class="cst"><div class="cs-dot" style="background:var(--purple)"></div><div class="cs-num" style="color:var(--purple)">14</div><div class="cs-lbl">Joined</div></div>
+        <div class="cst"><div class="cs-dot" style="background:var(--cyan)"></div><div class="cs-num" style="color:var(--cyan)">8</div><div class="cs-lbl">Checked In</div></div>
+        <div class="cst"><div class="cs-dot" style="background:var(--green)"></div><div class="cs-num" style="color:var(--green)">6</div><div class="cs-lbl">Active</div></div>
+        <div class="cst"><div class="cs-dot" style="background:var(--amber)"></div><div class="cs-num" style="color:var(--amber)">6</div><div class="cs-lbl">Slots Left</div></div>
+      </div>
+    </div>
+    <div class="stats-g stats-2" style="margin-bottom:16px">
+      <div class="sc"><div class="sv sv-p anim-num" data-t="4.7" data-d="1">4.7</div><div class="sl">Avg Partner Rating</div></div>
+      <div class="sc"><div class="sv sv-g anim-num" data-t="87">87</div><div class="sl">Fill Rate %</div></div>
+      <div class="sc"><div class="sv sv-pk anim-num" data-t="42">42</div><div class="sl">Total Campaigns</div></div>
+      <div class="sc"><div class="sv sv-c anim-num" data-t="312">312</div><div class="sl">Total Partners</div></div>
+    </div>
+    <div class="sec-hdr">
+      <div class="sec-ttl">Campaigns</div>
+      <button class="btn btn-p btn-sm" onclick="vTab('create')">＋ New Campaign</button>
+    </div>
+    <div class="chips" style="margin-bottom:14px">
+      ${['All (4)','Live (2)','Upcoming (2)','Completed'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+    ${MK.campaigns.map(c => {
+      const fp = Math.round((c.joined / c.req) * 100);
+      return `<div class="card" style="padding:15px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div>
+            <div style="font-weight:700;font-size:14.5px">${c.title}</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:3px">⏰ ${c.slot} · 📍 ${c.loc}</div>
+          </div>
+          ${c.status==='live'?'<span class="badge b-g">Live</span>':'<span class="badge b-a">Upcoming</span>'}
+        </div>
+        <div class="pbar"><div class="pfill" style="width:${fp}%"></div></div>
+        <div class="plabels"><span>${c.joined}/${c.req} filled</span><span>${fp}%</span></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-g btn-sm" style="flex:1" onclick="vTab('live')">📡 Live View</button>
+          <button class="btn btn-o btn-sm" style="flex:1" onclick="toast('✏️','Edit Campaign','Full editing in production','i')">✏️ Edit</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+  setTimeout(animCounters, 100);
+}
+
+/* ── VENUE CREATE ── */
+function vCreate(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-ttl" style="margin-bottom:4px">Create Campaign</div>
+    <p style="color:var(--t2);font-size:13px;margin-bottom:24px">Fill your venue with curated crowd tonight</p>
+    <div class="sdiv-lbl">Campaign Details</div>
+    <div style="height:12px"></div>
+    <div class="f-group"><label class="f-label">Campaign Title</label><input type="text" class="f-input" id="ct" placeholder="e.g. Saturday Night Vibes"></div>
+    <div class="f-group"><label class="f-label">Description (optional)</label><textarea class="f-input" rows="3" placeholder="Tell crowd partners what to expect..."></textarea></div>
+    <div class="sdiv-lbl" style="margin-top:20px">Audience & Requirements</div>
+    <div style="height:12px"></div>
+    <div class="f-group">
+      <label class="f-label">Audience Type</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:5px">
+        ${['💑 Couples','👩 Ladies Only','👥 Mixed Groups','🎉 Any'].map((a,i) => `<div class="ach${i===0?' on':''}" onclick="this.classList.toggle('on')">${a}</div>`).join('')}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0">
+      <div class="f-group"><label class="f-label">People Needed</label><input type="number" class="f-input" value="20" min="5" max="100"></div>
+      <div class="f-group"><label class="f-label">Min Stay Duration</label><select class="f-input"><option>30 mins</option><option>45 mins</option><option selected>60 mins</option><option>90 mins</option><option>2 hours</option></select></div>
+    </div>
+    <div class="sdiv-lbl" style="margin-top:8px">Schedule</div>
+    <div style="height:12px"></div>
+    <div class="f-group"><label class="f-label">Event Date</label><input type="date" class="f-input" value="2025-06-07"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="f-group"><label class="f-label">Start Time</label><input type="time" class="f-input" value="21:00"></div>
+      <div class="f-group"><label class="f-label">End Time</label><input type="time" class="f-input" value="01:00"></div>
+    </div>
+    <div class="sdiv-lbl" style="margin-top:8px">Complimentary Offering</div>
+    <div style="height:12px"></div>
+    <div class="f-group"><label class="f-label">What will you offer?</label><input type="text" class="f-input" id="co" placeholder="e.g. 2 Complimentary Cocktails" value="2 Complimentary Cocktails"></div>
+    <div class="f-group" style="margin-bottom:28px"><label class="f-label">Additional Notes</label><textarea class="f-input" rows="2" placeholder="Dress code, special instructions..."></textarea></div>
+    <button class="btn btn-p btn-full" style="margin-bottom:10px" onclick="doCreate()">🚀 Launch Campaign</button>
+    <button class="btn btn-o btn-full" onclick="vTab('dashboard')">Cancel</button>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function doCreate() {
+  const title = document.getElementById('ct')?.value.trim() || 'New Saturday Campaign';
+  const offer = document.getElementById('co')?.value.trim() || '2 Complimentary Drinks';
+  const newC = {
+    id: 'c' + (MK.campaigns.length + 1), venue:'Noir Lounge', loc:'Connaught Place, Delhi', dist:'0 km',
+    title, aud:'Couples / Ladies', req:20, joined:0, ci:0, active:0, slot:'9 PM – 1 AM', stay:'60 mins',
+    offer, oico:'🍹', status:'upcoming', grad:'linear-gradient(135deg,#160828,#3b1469)',
+    tags:['New'], rating:0, pay:'₹250'
+  };
+  MK.campaigns.unshift(newC);
+  toast('🚀', 'Campaign Launched!', `"${title}" is now live on VibeFill`, 's');
+  setTimeout(() => vTab('dashboard'), 800);
+}
+
+/* ── VENUE LIVE ── */
+function vLive(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div>
+        <div class="sec-ttl">Live Session</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+          <span class="pulse" style="width:7px;height:7px"></span>
+          <span style="font-size:12px;color:var(--green);font-weight:600">Active · Friday Night Vibes</span>
+        </div>
+      </div>
+      <div id="lv-clk" style="font-family:var(--fn);font-size:28px;color:var(--cyan)">--:--:--</div>
+    </div>
+    <div class="stats-g stats-4" style="margin-bottom:22px">
+      ${[['20','Required','var(--t2)'],['14','Joined','var(--purple)'],['8','Checked In','var(--cyan)'],['6','Active Now','var(--green)']].map(s =>
+        `<div class="sc"><div class="sv" style="color:${s[2]};font-size:28px">${s[0]}</div><div class="sl">${s[1]}</div></div>`
+      ).join('')}
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="sec-ttl" style="font-size:15px;margin:0">QR Entry Scanner</div>
+      <span class="badge b-p">Demo Mode</span>
+    </div>
+    <div class="scanner-box" style="margin-bottom:18px">
+      <div class="scan-line"></div>
+      <div class="sv-corners">
+        <div class="crnr ctop-l"></div><div class="crnr ctop-r"></div>
+        <div class="crnr cbot-l"></div><div class="crnr cbot-r"></div>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;z-index:1">
+        <div style="font-size:46px;opacity:.15">📷</div>
+        <div style="font-size:11px;color:var(--t3)">Camera not available in demo mode</div>
+      </div>
+    </div>
+    <button class="btn btn-p btn-full" style="margin-bottom:22px" onclick="simScan()">✅ Simulate QR Scan</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="sec-ttl" style="font-size:15px;margin:0">Active Partners</div>
+      <span class="badge b-g">6 active</span>
+    </div>
+    <div class="card">
+      ${MK.users.filter(u => u.status === 'active').slice(0, 6).map(u => `
+      <div class="lr">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--purple-g);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${u.ava}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">${u.name}</div>
+          <div style="font-size:11px;color:var(--t2)">${u.handle} · ${u.gender==='F'?'Female':'Male'} · ${u.sessions} sessions</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:12px;color:var(--amber)">⭐ ${u.rating}</div>
+          <span class="badge b-g" style="margin-top:5px;font-size:9px">Active</span>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:16px;padding:15px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)">
+      <div style="font-size:12px;color:var(--t3);text-align:center">Real-time sync requires Supabase backend · <span style="color:var(--purple);cursor:pointer" onclick="toast('🔗','Supabase Ready','Integration docs at docs.vibefill.com','i')">Connect backend</span></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+  startLiveClock();
+}
+
+function startLiveClock() {
+  const tick = () => {
+    const e = document.getElementById('lv-clk');
+    if (!e) return;
+    e.textContent = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+    setTimeout(tick, 1000);
+  };
+  tick();
+}
+
+function simScan() {
+  const u = MK.users[Math.floor(Math.random() * MK.users.length)];
+  toast('✅', 'Check-in: ' + u.name, 'QR pass validated · Session started', 's');
+}
+
+/* ── VENUE ANALYTICS ── */
+function vAnalytics(el) {
+  const max = Math.max(...MK.weekData);
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-ttl" style="margin-bottom:4px">Analytics</div>
+    <p style="color:var(--t2);font-size:13px;margin-bottom:20px">Noir Lounge · Last 7 days performance</p>
+    <div class="stats-g stats-2" style="margin-bottom:18px">
+      <div class="sc"><div class="sv sv-p anim-num" data-t="312">0</div><div class="sl">Total Partners</div></div>
+      <div class="sc"><div class="sv sv-g anim-num" data-t="87">0</div><div class="sl">Avg Fill Rate %</div></div>
+      <div class="sc"><div class="sv sv-c anim-num" data-t="4.7" data-d="1">0.0</div><div class="sl">Partner Rating</div></div>
+      <div class="sc"><div class="sv sv-a anim-num" data-t="92">0</div><div class="sl">Completion %</div></div>
+    </div>
+    <div class="card" style="padding:18px;margin-bottom:16px">
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:16px">Weekly Sessions</div>
+      <div class="bchart">
+        ${MK.weekData.map((v, i) => {
+          const isWknd = i === 4 || i === 5;
+          return `<div class="bi">
+            <div style="font-size:10px;color:${isWknd?'var(--pink)':'var(--purple)'};font-weight:700;margin-bottom:3px">${v}</div>
+            <div class="b-bar" style="height:${Math.round((v/max)*72)+4}px;background:${isWknd?'linear-gradient(180deg,var(--pink),rgba(236,72,153,.3))':'linear-gradient(180deg,var(--purple),rgba(168,85,247,.3))'}"></div>
+            <div class="b-lbl">${MK.weekLabels[i]}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="card" style="padding:18px;margin-bottom:16px">
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:14px">Audience Breakdown</div>
+      ${[['💑 Couples','42%','var(--purple)',42],['👩 Ladies','31%','var(--pink)',31],['👥 Mixed Groups','27%','var(--cyan)',27]].map(([lbl,pct,clr,w]) => `
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>${lbl}</span><span style="font-weight:700;color:${clr}">${pct}</span></div>
+        <div class="pbar"><div style="height:100%;border-radius:100px;background:${clr};width:${w}%;transition:width 1.5s ease"></div></div>
+      </div>`).join('')}
+    </div>
+    <div class="card" style="padding:18px">
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:14px">Crowd Quality Metrics</div>
+      ${[['Punctuality Rate','94%',94],['Session Completion','92%',92],['Avg Rating (of 5)','4.7 / 5',94],['No-Show Rate','8%',8]].map(([lbl,val,w]) => `
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px"><span style="color:var(--t2)">${lbl}</span><span style="font-weight:700">${val}</span></div>
+        <div class="pbar"><div class="pfill" style="width:${w}%"></div></div>
+      </div>`).join('')}
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+  setTimeout(animCounters, 100);
+}
+
+/* ── VENUE PROFILE ── */
+function vProfile(el) {
+  el.innerHTML = `
+  <div class="prof-hero" style="background:linear-gradient(180deg,rgba(236,72,153,.1) 0%,transparent 100%)">
+    <div class="prof-ava" style="background:linear-gradient(135deg,var(--pink),var(--amber));font-size:38px">🏛️</div>
+    <div class="prof-name">Noir Lounge</div>
+    <div class="prof-handle">📍 Connaught Place, New Delhi</div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:13px">
+      <span class="badge b-g"><span class="pulse" style="width:6px;height:6px;margin-right:4px"></span>Verified</span>
+      <span class="badge b-pk">Capacity 200</span>
+      <span class="badge b-c">DJ · Bar · Rooftop</span>
+    </div>
+    <div class="pstats">
+      <div class="psi"><div class="psn sv-pk">4.7</div><div class="psl">Rating</div></div>
+      <div class="psdiv"></div>
+      <div class="psi"><div class="psn sv-p">42</div><div class="psl">Campaigns</div></div>
+      <div class="psdiv"></div>
+      <div class="psi"><div class="psn sv-g">312</div><div class="psl">Partners</div></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="card" style="padding:16px;margin-bottom:16px">
+      <p style="font-size:13.5px;color:var(--t2);line-height:1.75">Noir Lounge is a premium nightlife destination in the heart of Connaught Place. Known for its sophisticated ambience, world-class DJs, and curated cocktail menu — Noir sets the gold standard for Delhi nightlife.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:14px">
+        ${['🍹 Full Bar','🎵 Live DJ','🌙 Open Till 2 AM','💳 Cards Accepted','🅿️ Valet Parking','👔 Smart Casual'].map(t => `<span class="badge b-p">${t}</span>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      ${[['👤','Owner','Rahul Gupta'],['📞','Contact','+91 98765 43210'],['⏰','Hours','9 PM – 2 AM (Fri–Sun)'],['🎂','On VibeFill Since','January 2025'],['✅','Status','Verified & Active']].map(([ico,lbl,val]) => `
+      <div class="lr">
+        <div style="width:36px;height:36px;border-radius:9px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:17px">${ico}</div>
+        <div style="flex:1"><div style="font-size:10.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.4px">${lbl}</div><div style="font-size:14px;font-weight:500;margin-top:2px">${val}</div></div>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="sec" style="padding-top:4px">
+    <div class="sec-ttl" style="margin-bottom:14px">Settings</div>
+    <div class="card">
+      ${[['📝','Edit Venue Profile','Update details & images'],['💰','Payout Settings','Configure earnings method'],['🔔','Alert Preferences','Fill rate & check-in alerts'],['🚪','Sign Out','Return to login',true]].map(([ico,lbl,sub,red]) => `
+      <div class="lr" style="cursor:pointer" onclick="${red ? "nav('auth')" : `toast('🔧','${lbl}','Available in full version','i')`}">
+        <div style="width:38px;height:38px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px">${ico}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:500${red?';color:var(--red)':''}">${lbl}</div><div style="font-size:11.5px;color:var(--t2)">${sub}</div></div>
+        <span style="color:var(--t4);font-size:18px">›</span>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div style="height:24px"></div>`;
+}
+
+/* ===================================================================
+   ADMIN TABS
+=================================================================== */
+function aTab(t) {
+  ['overview','users','venues','campaigns','activity'].forEach(k => {
+    const n = document.getElementById('an-' + k);
+    if (n) n.classList.toggle('on', k === t);
+  });
+  const c = document.getElementById('a-c');
+  c.innerHTML = ''; c.scrollTop = 0;
+  ({ overview: aOverview, users: aUsers, venues: aVenues, campaigns: aCampaigns, activity: aActivity })[t]?.(c);
+}
+
+/* ── ADMIN OVERVIEW ── */
+function aOverview(el) {
+  const max = Math.max(...MK.weekData);
+  el.innerHTML = `
+  <div class="wb"><div class="wtime">Platform Overview</div><div class="wname">June 2025 ⚡</div></div>
+  <div class="adm-stats">
+    ${[
+      { ico:'👥', bg:'var(--purple-g)', num:'1,247', raw:1247, lbl:'Total Users',      ch:'↑ 12%', cc:'var(--green)' },
+      { ico:'🏛️', bg:'var(--pink-g)',   num:'38',   raw:38,   lbl:'Active Venues',    ch:'↑ 5%',  cc:'var(--green)' },
+      { ico:'📋', bg:'var(--cyan-g)',   num:'156',  raw:156,  lbl:'Campaigns',        ch:'↑ 22%', cc:'var(--green)' },
+      { ico:'✅', bg:'var(--green-g)',  num:'2,840',raw:2840, lbl:'Sessions Done',    ch:'↑ 18%', cc:'var(--green)' },
+      { ico:'💰', bg:'var(--amber-g)',  num:'4.2L', raw:0,    lbl:'₹ Payouts Sent',   ch:'↑ 34%', cc:'var(--green)' },
+      { ico:'⚠️', bg:'var(--red-g)',   num:'7',    raw:7,    lbl:'Pending Reports',  ch:'↓ 2',   cc:'var(--red)'   }
+    ].map(s => `
+    <div class="asc">
+      <div class="asc-top">
+        <div class="asc-ico" style="background:${s.bg}">${s.ico}</div>
+        <div class="asc-ch" style="color:${s.cc}">${s.ch}</div>
+      </div>
+      <div class="asc-num">${s.num}</div>
+      <div class="asc-lbl">${s.lbl}</div>
+    </div>`).join('')}
+  </div>
+  <div class="sec" style="padding-top:8px">
+    <div class="card" style="padding:18px;margin-bottom:16px">
+      <div style="font-size:13.5px;font-weight:700;margin-bottom:16px">Platform Sessions — This Week</div>
+      <div class="bchart">
+        ${MK.weekData.map((v, i) => `
+        <div class="bi">
+          <div style="font-size:10px;color:var(--cyan);font-weight:700;margin-bottom:3px">${v}</div>
+          <div class="b-bar" style="height:${Math.round((v/max)*72)+4}px;background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.3))"></div>
+          <div class="b-lbl">${MK.weekLabels[i]}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="card" style="padding:16px">
+        <div style="font-size:11.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">User Split</div>
+        ${[['👩 Female','58%',58,'var(--pink)'],['👨 Male','32%',32,'var(--purple)'],['💑 Couples','10%',10,'var(--cyan)']].map(([l,p,w,clr]) => `
+        <div style="margin-bottom:9px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--t2)">${l}</span><span style="color:${clr};font-weight:700">${p}</span></div>
+          <div class="pbar"><div style="height:100%;border-radius:100px;background:${clr};width:${w}%;transition:width 1.5s ease"></div></div>
+        </div>`).join('')}
+      </div>
+      <div class="card" style="padding:16px">
+        <div style="font-size:11.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Health KPIs</div>
+        ${[['Session Rate','92%','var(--green)'],['Retention','78%','var(--cyan)'],['Satisfaction','89%','var(--purple)'],['No-Shows','8%','var(--red)']].map(([l,p,clr]) => `
+        <div style="margin-bottom:9px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--t2)">${l}</span><span style="color:${clr};font-weight:700">${p}</span></div>
+          <div class="pbar"><div style="height:100%;border-radius:100px;background:${clr};width:${parseInt(p)}%;transition:width 1.5s ease"></div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="sec-hdr"><div class="sec-ttl" style="font-size:15px">Recent Activity</div><div class="sec-lnk" onclick="aTab('activity')">View All</div></div>
+    <div class="card">
+      ${MK.activity.slice(0, 4).map(a => `
+      <div class="act-itm">
+        <div class="act-ico" style="background:${a.bg}">${a.ico}</div>
+        <div><div class="act-txt">${a.txt}</div><div class="act-time">${a.time}</div></div>
+      </div>`).join('')}
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+/* ── ADMIN USERS ── */
+function aUsers(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-hdr"><div class="sec-ttl">Users (${MK.users.length})</div><button class="btn btn-p btn-sm" onclick="toast('📤','Invite Link','Copied to clipboard','s')">＋ Invite</button></div>
+    <input type="text" class="f-input" placeholder="🔍  Search users..." style="margin-bottom:14px">
+    <div class="chips" style="margin-bottom:16px">
+      ${['All','Active','Pending','Blocked'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+    <div class="card">
+      ${MK.users.map(u => `
+      <div class="lr">
+        <div style="width:42px;height:42px;border-radius:13px;background:var(--purple-g);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${u.ava}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:14px">${u.name}</div>
+          <div style="font-size:11px;color:var(--t2)">${u.handle} · ${u.gender==='F'?'Female':'Male'} · ${u.city}</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px">${u.sessions} sessions${u.rating>0?' · ⭐ '+u.rating:''}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+          <span class="badge ${u.status==='active'?'b-g':u.status==='pending'?'b-a':'b-r'}">${u.status}</span>
+          <div style="display:flex;gap:5px">
+            ${u.status!=='blocked'?`<button class="btn btn-danger btn-sm" style="padding:5px 9px;font-size:10px" onclick="blockUser('${u.id}')">Block</button>`:'<button class="btn btn-success btn-sm" style="padding:5px 9px;font-size:10px" onclick="unblockUser(\''+u.id+'\')">Unblock</button>'}
+            <button class="btn btn-g btn-sm" style="padding:5px 9px;font-size:10px" onclick="viewUser('${u.id}')">View</button>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function blockUser(id) {
+  const u = MK.users.find(x => x.id === id);
+  if (u) { u.status = 'blocked'; toast('🚫', u.name + ' blocked', 'User access revoked', 'e'); aTab('users'); }
+}
+
+function unblockUser(id) {
+  const u = MK.users.find(x => x.id === id);
+  if (u) { u.status = 'active'; toast('✅', u.name + ' unblocked', 'User access restored', 's'); aTab('users'); }
+}
+
+function viewUser(id) {
+  const u = MK.users.find(x => x.id === id);
+  if (!u) return;
+  openMod(`
+  <div style="text-align:center;margin-bottom:20px">
+    <div style="width:76px;height:76px;border-radius:24px;background:var(--purple-g);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:38px">${u.ava}</div>
+    <div style="font-family:var(--fd);font-size:28px;font-weight:600">${u.name}</div>
+    <div style="color:var(--t2);font-size:13px;margin-top:3px">${u.handle} · ${u.gender==='F'?'Female':'Male'} · ${u.city}</div>
+    <span class="badge ${u.status==='active'?'b-g':u.status==='pending'?'b-a':'b-r'}" style="margin-top:10px">${u.status}</span>
+  </div>
+  <div class="stats-g stats-2" style="margin-bottom:18px">
+    <div class="sc"><div class="sv sv-p" style="font-size:28px">${u.rating || '—'}</div><div class="sl">Rating</div></div>
+    <div class="sc"><div class="sv sv-pk" style="font-size:28px">${u.sessions}</div><div class="sl">Sessions</div></div>
+  </div>
+  <div class="card" style="margin-bottom:18px">
+    ${[['🆔','User ID',u.id],['📅','Joined',u.joined],['📍','City',u.city]].map(([ico,lbl,val]) => `
+    <div class="lr">
+      <div style="width:34px;height:34px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:16px">${ico}</div>
+      <div style="flex:1"><div style="font-size:10.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.4px">${lbl}</div><div style="font-size:13.5px;font-weight:500;margin-top:2px">${val}</div></div>
+    </div>`).join('')}
+  </div>
+  <div style="display:flex;gap:10px">
+    ${u.status !== 'blocked'
+      ? `<button class="btn btn-danger btn-full" onclick="blockUser('${u.id}');closeM()">🚫 Block User</button>`
+      : `<button class="btn btn-success btn-full" onclick="unblockUser('${u.id}');closeM()">✅ Unblock</button>`}
+    <button class="btn btn-o btn-full" onclick="closeM()">Close</button>
+  </div>`);
+}
+
+/* ── ADMIN VENUES ── */
+function aVenues(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-hdr"><div class="sec-ttl">Venues (${MK.venues.length})</div><span class="badge b-a">1 Pending</span></div>
+    <input type="text" class="f-input" placeholder="🔍  Search venues..." style="margin-bottom:14px">
+    <div class="chips" style="margin-bottom:16px">
+      ${['All','Verified','Pending','Suspended'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+    <div class="card">
+      ${MK.venues.map(v => `
+      <div class="lr">
+        <div style="width:42px;height:42px;border-radius:13px;background:var(--pink-g);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🏛️</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:14px">${v.name}${v.ver?'<span style="color:var(--cyan);font-size:13px;margin-left:5px">✓</span>':''}</div>
+          <div style="font-size:11px;color:var(--t2)">${v.loc} · ${v.owner}</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px">${v.camps} campaigns · ⭐ ${v.rating}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+          <span class="badge ${v.status==='active'?'b-g':'b-a'}">${v.status}</span>
+          ${!v.ver ? `<button class="btn btn-p btn-sm" style="padding:5px 9px;font-size:10px" onclick="verifyVenue('${v.id}')">Verify ✓</button>` : ''}
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function verifyVenue(id) {
+  const v = MK.venues.find(x => x.id === id);
+  if (v) { v.ver = true; v.status = 'active'; toast('✅', v.name + ' Verified!', 'Venue is now live on VibeFill', 's'); aTab('venues'); }
+}
+
+/* ── ADMIN CAMPAIGNS ── */
+function aCampaigns(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-hdr"><div class="sec-ttl">All Campaigns</div><span class="badge b-g">${MK.campaigns.length} total</span></div>
+    <div class="chips" style="margin-bottom:16px">
+      ${['All','Live','Upcoming','Completed'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+    ${MK.campaigns.map(c => {
+      const fp = Math.round((c.joined / c.req) * 100);
+      return `<div class="card" style="padding:15px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div style="flex:1;margin-right:10px">
+            <div style="font-weight:700;font-size:14px">${c.title}</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:3px">${c.venue} · ${c.slot}</div>
+          </div>
+          <span class="badge ${c.status==='live'?'b-g':'b-a'}">${c.status}</span>
+        </div>
+        <div class="pbar"><div class="pfill" style="width:${fp}%"></div></div>
+        <div class="plabels"><span>${c.joined}/${c.req} filled</span><span>${fp}%</span></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-o btn-sm" style="flex:1" onclick="toast('👁️','Campaign Details','Full review in production','i')">👁️ Review</button>
+          <button class="btn btn-danger btn-sm" style="flex:1" onclick="toast('⏸️','Paused','Campaign has been paused','e')">⏸️ Pause</button>
+        </div>
+      </div>`;
+    }).join('')}
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+/* ── ADMIN ACTIVITY ── */
+function aActivity(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-hdr">
+      <div class="sec-ttl">Live Activity Feed</div>
+      <div style="display:flex;align-items:center;gap:6px"><span class="pulse" style="width:7px;height:7px"></span><span style="font-size:12px;color:var(--green);font-weight:600">Live</span></div>
+    </div>
+    <div class="card" id="act-feed">
+      ${MK.activity.map(a => `
+      <div class="act-itm">
+        <div class="act-ico" style="background:${a.bg}">${a.ico}</div>
+        <div><div class="act-txt">${a.txt}</div><div class="act-time">${a.time}</div></div>
+      </div>`).join('')}
+    </div>
+    <div style="text-align:center;padding:14px 0;color:var(--t3);font-size:12px">
+      Real-time sync via Supabase Realtime · <span style="color:var(--purple);cursor:pointer" onclick="toast('🔗','Integration Ready','Supabase client pre-configured','i')">Connect backend</span>
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+
+  // Simulate live feed updates
+  const fakeEvents = [
+    { ico:'👤', bg:'rgba(168,85,247,.15)', txt:'<strong>New user registered</strong> via referral link' },
+    { ico:'📋', bg:'rgba(34,211,238,.12)', txt:'Campaign <strong>"Skyline Midweek"</strong> just went live' },
+    { ico:'💰', bg:'rgba(74,222,128,.12)', txt:'Payout <strong>₹1,200</strong> sent to Priya Kapoor' },
+    { ico:'⭐', bg:'rgba(251,191,36,.12)', txt:'<strong>Noir Lounge</strong> received a 5-star review' },
+    { ico:'🎯', bg:'rgba(168,85,247,.15)', txt:'<strong>KAMA Sundowner</strong> hit 100% fill rate 🎉' }
+  ];
+  let idx = 0;
+  const sim = setInterval(() => {
+    const feed = document.getElementById('act-feed');
+    if (!feed || S.screen !== 'admin') { clearInterval(sim); return; }
+    const ev = fakeEvents[idx++ % fakeEvents.length];
+    const now = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true });
+    const d = document.createElement('div');
+    d.className = 'act-itm';
+    d.style.cssText = 'animation:fadeUp .4s ease both;';
+    d.innerHTML = `<div class="act-ico" style="background:${ev.bg}">${ev.ico}</div><div><div class="act-txt">${ev.txt}</div><div class="act-time">${now} · just now</div></div>`;
+    feed.insertBefore(d, feed.firstChild);
+    if (feed.children.length > 14) feed.removeChild(feed.lastChild);
+  }, 6000);
+}
+
+/* ===================================================================
+   INIT
+=================================================================== */
+window.addEventListener('load', () => {
+  // Show splash then auto-navigate to auth
+  setTimeout(() => nav('auth'), 1900);
+});
+</script>
+</body>
+</html>
