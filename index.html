@@ -296,12 +296,84 @@ select.f-input{appearance:none;cursor:pointer}
 .earn-hero{background:linear-gradient(135deg,rgba(168,85,247,.14),rgba(236,72,153,.1));border:1px solid rgba(168,85,247,.2);border-radius:var(--r);padding:24px;text-align:center;margin-bottom:16px}
 .earn-amount{font-family:var(--fn);font-size:56px;line-height:1;color:var(--green);text-shadow:0 0 30px rgba(74,222,128,.3)}
 
+/* ── SKELETON LOADERS ────────────────────────────────────────── */
+.skel{background:linear-gradient(90deg,var(--bg3) 25%,rgba(255,255,255,.045) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.6s ease-in-out infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-l{height:12px;margin-bottom:9px}
+.sk-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:11px;overflow:hidden}
+
+/* ── ONBOARDING ───────────────────────────────────────────────── */
+#s-onboard{background:var(--bg);justify-content:center;z-index:90}
+.ob-slide{display:none;text-align:center;padding:10px 0 20px;animation:fadeUp .42s ease both}
+.ob-slide.on{display:block}
+.ob-img{font-size:76px;line-height:1;margin-bottom:26px;filter:drop-shadow(0 0 28px rgba(168,85,247,.4))}
+.ob-ttl{font-family:var(--fd);font-size:38px;font-weight:600;line-height:1.1;margin-bottom:12px}
+.ob-sub{font-size:14px;color:var(--t2);line-height:1.75;max-width:310px;margin:0 auto}
+.ob-dots{display:flex;justify-content:center;gap:9px;margin-top:30px}
+.od{width:8px;height:8px;border-radius:50%;background:var(--border);transition:var(--tr)}
+.od.on{width:26px;background:var(--purple);border-radius:4px}
+
+/* ── STAR RATING ─────────────────────────────────────────────── */
+.stars-row{display:flex;gap:10px;justify-content:center;margin:18px 0 6px}
+.star{font-size:38px;cursor:pointer;transition:var(--tr);filter:grayscale(1) opacity(.25);user-select:none}
+.star.lit{filter:none;transform:scale(1.14)}
+.star:hover{filter:none;transform:scale(1.1)}
+
+/* ── CONFETTI / CELEBRATION ──────────────────────────────────── */
+.confetti-host{position:fixed;inset:0;pointer-events:none;z-index:9997;overflow:hidden}
+.cf{position:absolute;border-radius:2px;animation:cfFall linear forwards;top:-10px}
+@keyframes cfFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(105vh) rotate(720deg)}}
+
+/* ── FLOATING ACTION BUTTON ──────────────────────────────────── */
+.fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:18px;width:54px;height:54px;border-radius:17px;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 4px 22px rgba(168,85,247,.48);z-index:49;transition:var(--tr);border:none}
+.fab:hover{transform:scale(1.08) translateY(-2px);box-shadow:0 8px 32px rgba(168,85,247,.64)}
+.fab:active{transform:scale(.95)}
+
+/* ── MAP PLACEHOLDER ─────────────────────────────────────────── */
+.map-ph{background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(34,211,238,.04));border:1px solid var(--border);border-radius:var(--r);height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;position:relative;overflow:hidden}
+.map-ph::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 40% 50%,rgba(168,85,247,.07) 0%,transparent 60%),radial-gradient(circle at 70% 40%,rgba(34,211,238,.05) 0%,transparent 50%)}
+.map-pin{font-size:28px;filter:drop-shadow(0 0 12px rgba(168,85,247,.6));animation:pinBob 2.2s ease-in-out infinite}
+@keyframes pinBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 24px;text-align:center;gap:12px}
+.empty-ico{font-size:52px;filter:grayscale(.5) opacity(.4)}
+.empty-ttl{font-size:16px;font-weight:600;color:var(--t2)}
+.empty-sub{font-size:13px;color:var(--t3);max-width:240px;line-height:1.6}
+
+/* ── GLOW DIVIDER ────────────────────────────────────────────── */
+.glow-div{height:1px;background:linear-gradient(90deg,transparent,var(--purple),var(--pink),transparent);margin:4px 0;opacity:.25}
+
+/* ── SESSION TIMER RING ──────────────────────────────────────── */
+.ring-wrap{position:relative;width:120px;height:120px;margin:14px auto 4px}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bg3);stroke-width:8}
+.ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:8;stroke-linecap:round;stroke-dasharray:326;transition:stroke-dashoffset 1s linear}
+
+/* ── BLACKLIST CARD ──────────────────────────────────────────── */
+.bl-card{background:linear-gradient(135deg,rgba(248,113,113,.08),rgba(248,113,113,.03));border:1px solid rgba(248,113,113,.18);border-radius:var(--r);padding:14px;margin-bottom:9px}
+
+/* ── SCROLL FADE ─────────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── DESKTOP / TABLET LAYOUT ─────────────────────────────────── */
 @media(min-width:768px){
   #s-auth{justify-content:center;flex-direction:row;align-items:center;gap:48px;padding:40px}
   .auth-hero{flex:none;padding:0;max-width:340px}
   .auth-panel{border-radius:var(--rxl);margin-bottom:0;max-height:unset;border:1px solid var(--border)}
   .stats-3{grid-template-columns:repeat(4,1fr)}
   .adm-stats{grid-template-columns:repeat(4,1fr)}
+}
+@media(min-width:900px){
+  .shell{flex-direction:row;position:relative}
+  .hdr{position:sticky;top:0;z-index:10;width:100%}
+  .dsk-side{width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:16px 10px;gap:4px;overflow-y:auto;height:100%}
+  .dsk-ni{display:flex;align-items:center;gap:12px;padding:11px 14px;color:var(--t3);font-size:13.5px;font-weight:500;cursor:pointer;transition:var(--tr);border-radius:10px;user-select:none}
+  .dsk-ni:hover{color:var(--t1);background:rgba(255,255,255,.04)}
+  .dsk-ni.on{color:var(--purple);background:var(--purple-g)}
+  .dsk-ni-ico{font-size:19px;width:22px;text-align:center}
+  .dsk-section-lbl{font-size:9.5px;font-weight:700;color:var(--t4);letter-spacing:1.2px;text-transform:uppercase;padding:14px 14px 6px}
+  .bnav{display:none}
 }
 @media(min-width:1024px){.adm-stats{grid-template-columns:repeat(6,1fr)}}
 </style>
@@ -313,7 +385,47 @@ select.f-input{appearance:none;cursor:pointer}
 
 <div id="app">
 
-<!-- SPLASH -->
+<!-- SVG defs for ring gradient -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#A855F7"/>
+    <stop offset="100%" style="stop-color:#EC4899"/>
+  </linearGradient>
+</defs></svg>
+
+<!-- ONBOARDING -->
+<div id="s-onboard" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;padding:32px 28px max(28px,env(safe-area-inset-bottom));max-width:480px;width:100%;margin:0 auto;position:relative;z-index:2">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px">
+      <div style="font-family:var(--fd);font-size:22px;font-weight:700;background:linear-gradient(135deg,#fff,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">VibeFill</div>
+      <button class="btn btn-o" style="padding:7px 16px;font-size:13px" onclick="nav('auth')">Skip</button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="ob-slide on" id="obs-0">
+        <div class="ob-img">🌙</div>
+        <div class="ob-ttl">The Night Needs a Crowd</div>
+        <div class="ob-sub">Venues look better with people. VibeFill connects verified crowd partners with the best nightlife spots in the city.</div>
+      </div>
+      <div class="ob-slide" id="obs-1">
+        <div class="ob-img">🎫</div>
+        <div class="ob-ttl">Show Up. Get Rewarded.</div>
+        <div class="ob-sub">Join campaigns, check in with your QR pass, stay the minimum duration, and earn perks plus real cash every session.</div>
+      </div>
+      <div class="ob-slide" id="obs-2">
+        <div class="ob-img">🏛️</div>
+        <div class="ob-ttl">Venues Win Every Night</div>
+        <div class="ob-sub">Club owners get real, verified crowd presence during low footfall hours. No bots. No fakes. Just genuine energy.</div>
+      </div>
+      <div class="ob-dots" id="ob-dots"><div class="od on"></div><div class="od"></div><div class="od"></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:28px">
+      <button class="btn btn-p btn-full" id="ob-next" onclick="obNext()">Continue →</button>
+      <button class="btn btn-o btn-full" onclick="nav('auth')">Already have an account</button>
+    </div>
+  </div>
+</div>
+
+
 <div id="s-splash" class="screen active">
   <div style="text-align:center;animation:fadeUp .8s ease both">
     <div class="splash-mark">✦</div>
@@ -406,6 +518,7 @@ select.f-input{appearance:none;cursor:pointer}
       <div class="ni on" id="vn-dashboard" onclick="vTab('dashboard')"><div class="ni-ico">📊</div>Dashboard</div>
       <div class="ni" id="vn-create" onclick="vTab('create')"><div class="ni-ico">➕</div>Create</div>
       <div class="ni" id="vn-live" onclick="vTab('live')"><div class="ni-ico">📡</div>Live</div>
+      <div class="ni" id="vn-partners" onclick="vTab('partners')"><div class="ni-ico">👥</div>Partners</div>
       <div class="ni" id="vn-analytics" onclick="vTab('analytics')"><div class="ni-ico">📈</div>Analytics</div>
       <div class="ni" id="vn-profile" onclick="vTab('profile')"><div class="ni-ico">🏛️</div>Venue</div>
     </div>
@@ -418,8 +531,11 @@ select.f-input{appearance:none;cursor:pointer}
     <div class="hdr">
       <div><div class="hdr-logo">VibeFill</div><div class="hdr-sub" style="color:var(--cyan)">Admin Console</div></div>
       <div class="hdr-acts">
-        <div class="notif-btn">🔔</div>
-        <div class="ava ava-a">AD</div>
+        <div class="notif-btn" onclick="openAdminNotif()" title="Notifications">🔔</div>
+        <button onclick="adminLogout()" title="Sign Out" style="background:var(--red-g);border:1px solid rgba(248,113,113,.25);color:var(--red);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:5px;transition:all .22s ease">
+          <span style="font-size:15px">🚪</span><span>Logout</span>
+        </button>
+        <div class="ava ava-a" onclick="openAdminProfile()" title="Admin Profile" style="cursor:pointer">AD</div>
       </div>
     </div>
     <div class="content" id="a-c"></div>
@@ -428,6 +544,7 @@ select.f-input{appearance:none;cursor:pointer}
       <div class="ni" id="an-users" onclick="aTab('users')"><div class="ni-ico">👥</div>Users</div>
       <div class="ni" id="an-venues" onclick="aTab('venues')"><div class="ni-ico">🏛️</div>Venues</div>
       <div class="ni" id="an-campaigns" onclick="aTab('campaigns')"><div class="ni-ico">📋</div>Campaigns</div>
+      <div class="ni" id="an-reports" onclick="aTab('reports')"><div class="ni-ico">⚠️</div>Reports</div>
       <div class="ni" id="an-activity" onclick="aTab('activity')"><div class="ni-ico">⚡</div>Activity</div>
     </div>
   </div>
@@ -575,15 +692,6 @@ function animCounters() {
 /* ===================================================================
    CROWD PARTNER TABS
 =================================================================== */
-function cpTab(t) {
-  ['home','explore','pass','earn','profile'].forEach(k => {
-    const n = document.getElementById('cpn-' + k);
-    if (n) n.classList.toggle('on', k === t);
-  });
-  const c = document.getElementById('cp-c');
-  c.innerHTML = ''; c.scrollTop = 0;
-  ({ home: cpHome, explore: cpExplore, pass: cpPass, earn: cpEarn, profile: cpProfile })[t]?.(c);
-}
 
 /* ── CP HOME ── */
 function cpHome(el) {
@@ -614,19 +722,6 @@ function cpHome(el) {
   setTimeout(animCounters, 100);
 }
 
-/* ── CP EXPLORE ── */
-function cpExplore(el) {
-  el.innerHTML = `
-  <div class="sec">
-    <div class="sec-ttl" style="margin-bottom:14px">Explore Campaigns</div>
-    <input type="text" class="f-input" placeholder="🔍  Search venues or campaigns..." style="margin-bottom:14px">
-    <div class="chips" style="margin-bottom:18px">
-      ${['All','Delhi NCR','Tonight','Weekend','Couples','Ladies','Groups','Top Rated'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
-    </div>
-    ${MK.campaigns.map(c => ccardHTML(c)).join('')}
-    <div style="text-align:center;padding:20px 0;color:var(--t3);font-size:12.5px">✦ All nearby campaigns shown ✦</div>
-  </div>`;
-}
 
 /* ── CAMPAIGN CARD HTML ── */
 function ccardHTML(c) {
@@ -659,73 +754,6 @@ function ccardHTML(c) {
   </div>`;
 }
 
-/* ── CP PASS ── */
-function cpPass(el) {
-  const pid = 'VF-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-  el.innerHTML = `
-  <div style="padding:22px 0 10px;text-align:center">
-    <div style="font-family:var(--fd);font-size:22px;font-weight:600">Active Entry Pass</div>
-    <div style="color:var(--t2);font-size:13px;margin-top:4px">Session live · Noir Lounge</div>
-  </div>
-  <div class="pass-card">
-    <div class="pass-venue">Noir Lounge</div>
-    <div style="color:var(--t2);font-size:13px;margin-top:3px">Connaught Place, New Delhi</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px">
-      <span class="pulse"></span>
-      <span style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:.8px;text-transform:uppercase">Session Active</span>
-    </div>
-    <div class="qr-wrap" id="qr-host" style="min-width:192px;min-height:192px">
-      <div class="qrc qtl"></div><div class="qrc qtr"></div>
-      <div class="qrc qbl"></div><div class="qrc qbr"></div>
-    </div>
-    <div class="pass-id">${pid}</div>
-    <div class="ptlbl" style="margin-top:14px">Time Remaining</div>
-    <div class="ptimer" id="p-tmr">--:--</div>
-    <div class="pi-g">
-      <div class="pi-c"><div class="pi-l">Check-in</div><div class="pi-v">9:43 PM</div></div>
-      <div class="pi-c"><div class="pi-l">Min Stay</div><div class="pi-v">90 mins</div></div>
-      <div class="pi-c"><div class="pi-l">Offer</div><div class="pi-v">🍹 2 Cocktails</div></div>
-      <div class="pi-c"><div class="pi-l">Status</div><div class="pi-v" style="color:var(--green)">✓ Valid</div></div>
-    </div>
-  </div>
-  <div style="padding:18px 16px 28px;display:flex;flex-direction:column;gap:10px">
-    <button class="btn btn-p btn-full" onclick="toast('📤','Pass Shared!','Entry QR copied to clipboard','s')">📤 Share Pass</button>
-    <button class="btn btn-g btn-full" onclick="toast('❓','Support','Chat with VibeFill support','i')">❓ Need Help?</button>
-  </div>`;
-  drawQR(pid);
-  startTimer();
-}
-
-function drawQR(pid) {
-  setTimeout(() => {
-    const host = document.getElementById('qr-host');
-    if (!host) return;
-    const size = 160;
-    const cv = document.createElement('canvas');
-    cv.width = size; cv.height = size;
-    const ctx = cv.getContext('2d');
-    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);
-    const cs = size / 21;
-    ctx.fillStyle = '#1a0828';
-    // QR-like pattern blocks
-    [[0,0,7,7],[14,0,7,7],[0,14,7,7],[2,2,3,3],[16,2,3,3],[2,16,3,3],
-     [9,0,1,3],[0,9,3,1],[11,4,1,3],[4,11,3,1],[8,8,5,5],[10,10,1,1],
-     [7,9,1,4],[9,7,4,1],[14,14,3,1],[17,14,1,3],[14,17,3,1]
-    ].forEach(([x,y,w,h]) => ctx.fillRect(x*cs+4, y*cs+4, w*cs, h*cs));
-    host.appendChild(cv);
-  }, 80);
-}
-
-function startTimer() {
-  if (S.timerInt) clearInterval(S.timerInt);
-  S.timerInt = setInterval(() => {
-    S.timerSecs = Math.max(0, S.timerSecs - 1);
-    const m = Math.floor(S.timerSecs / 60), s = S.timerSecs % 60;
-    const e = document.getElementById('p-tmr');
-    if (e) e.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    else clearInterval(S.timerInt);
-  }, 1000);
-}
 
 /* ── CP EARN ── */
 function cpEarn(el) {
@@ -869,14 +897,6 @@ function openCamp(id) {
   <button class="btn btn-o btn-full" onclick="closeM()">Maybe Later</button>`);
 }
 
-function joinC(id) {
-  const c = MK.campaigns.find(x => x.id === id);
-  if (!c) return;
-  c.joined = Math.min(c.joined + 1, c.req);
-  toast('🎉', `Applied: ${c.venue}!`, 'Confirmation sent — your pass is ready', 's');
-  setTimeout(() => { if (S.role === 'cp') cpTab('pass'); }, 1500);
-}
-
 /* ===================================================================
    NOTIFICATIONS MODAL
 =================================================================== */
@@ -898,15 +918,6 @@ function openNotif() {
 /* ===================================================================
    VENUE TABS
 =================================================================== */
-function vTab(t) {
-  ['dashboard','create','live','analytics','profile'].forEach(k => {
-    const n = document.getElementById('vn-' + k);
-    if (n) n.classList.toggle('on', k === t);
-  });
-  const c = document.getElementById('v-c');
-  c.innerHTML = ''; c.scrollTop = 0;
-  ({ dashboard: vDash, create: vCreate, live: vLive, analytics: vAnalytics, profile: vProfile })[t]?.(c);
-}
 
 /* ── VENUE DASHBOARD ── */
 function vDash(el) {
@@ -1196,15 +1207,6 @@ function vProfile(el) {
 /* ===================================================================
    ADMIN TABS
 =================================================================== */
-function aTab(t) {
-  ['overview','users','venues','campaigns','activity'].forEach(k => {
-    const n = document.getElementById('an-' + k);
-    if (n) n.classList.toggle('on', k === t);
-  });
-  const c = document.getElementById('a-c');
-  c.innerHTML = ''; c.scrollTop = 0;
-  ({ overview: aOverview, users: aUsers, venues: aVenues, campaigns: aCampaigns, activity: aActivity })[t]?.(c);
-}
 
 /* ── ADMIN OVERVIEW ── */
 function aOverview(el) {
@@ -1449,10 +1451,618 @@ function aActivity(el) {
 }
 
 /* ===================================================================
+   ONBOARDING
+=================================================================== */
+let obStep = 0;
+function obNext() {
+  const slides = document.querySelectorAll('.ob-slide');
+  const dots   = document.querySelectorAll('.od');
+  slides[obStep].classList.remove('on');
+  dots[obStep].classList.remove('on');
+  obStep++;
+  if (obStep < 3) {
+    slides[obStep].classList.add('on');
+    dots[obStep].classList.add('on');
+    if (obStep === 2) document.getElementById('ob-next').textContent = 'Get Started →';
+  } else {
+    obStep = 0;
+    nav('auth');
+  }
+}
+
+/* ===================================================================
+   SKELETON HELPERS
+=================================================================== */
+function skCards(n = 3) {
+  return Array(n).fill(0).map(() => `
+  <div class="sk-card">
+    <div class="skel" style="height:95px;border-radius:10px;margin-bottom:13px"></div>
+    <div class="skel sk-l" style="width:65%"></div>
+    <div class="skel sk-l" style="width:85%"></div>
+    <div class="skel sk-l" style="width:45%"></div>
+    <div style="display:flex;gap:9px;margin-top:11px">
+      <div class="skel" style="flex:1;height:37px;border-radius:8px"></div>
+      <div class="skel" style="width:90px;height:37px;border-radius:8px"></div>
+    </div>
+  </div>`).join('');
+}
+
+function skStats(n = 3) {
+  const cols = `repeat(${n},1fr)`;
+  return `<div style="display:grid;grid-template-columns:${cols};gap:9px;margin-bottom:16px">
+    ${Array(n).fill(0).map(() => `<div class="sc"><div class="skel" style="height:30px;border-radius:6px;margin-bottom:7px"></div><div class="skel sk-l" style="width:55%;margin:0 auto 0"></div></div>`).join('')}
+  </div>`;
+}
+
+function skList(n = 5) {
+  return `<div class="card">
+    ${Array(n).fill(0).map(() => `
+    <div class="lr">
+      <div class="skel" style="width:42px;height:42px;border-radius:12px;flex-shrink:0"></div>
+      <div style="flex:1;gap:7px;display:flex;flex-direction:column">
+        <div class="skel sk-l" style="width:52%"></div>
+        <div class="skel sk-l" style="width:72%"></div>
+      </div>
+      <div class="skel" style="width:52px;height:22px;border-radius:100px"></div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function withSkeleton(el, skHtml, realFn, delay = 680) {
+  el.innerHTML = `<div class="sec">${skHtml}</div>`;
+  setTimeout(() => { el.innerHTML = ''; el.scrollTop = 0; realFn(el); }, delay);
+}
+
+/* ===================================================================
+   CONFETTI CELEBRATION
+=================================================================== */
+function celebrate() {
+  const host = document.createElement('div');
+  host.className = 'confetti-host';
+  document.body.appendChild(host);
+  const cols = ['#A855F7','#EC4899','#22D3EE','#4ADE80','#FBBF24','#fff'];
+  for (let i = 0; i < 72; i++) {
+    const el = document.createElement('div');
+    el.className = 'cf';
+    const size = 5 + Math.random() * 7;
+    el.style.cssText = `
+      left:${Math.random() * 100}%;
+      width:${size}px; height:${size}px;
+      background:${cols[Math.floor(Math.random() * cols.length)]};
+      border-radius:${Math.random() > .5 ? '50%' : '2px'};
+      animation-duration:${.9 + Math.random() * 1.6}s;
+      animation-delay:${Math.random() * .7}s;
+    `;
+    host.appendChild(el);
+  }
+  setTimeout(() => host.remove(), 2800);
+}
+
+/* ===================================================================
+   SESSION RATING MODAL
+=================================================================== */
+let _rStar = 0;
+function openRating(venueName) {
+  _rStar = 0;
+  openMod(`
+  <div style="text-align:center">
+    <div style="font-size:58px;margin-bottom:8px;animation:fadeUp .4s ease both">🎉</div>
+    <div class="mttl" style="text-align:center">Session Complete!</div>
+    <div style="color:var(--t2);font-size:13.5px;margin-bottom:20px">You stayed the required duration at <strong>${venueName}</strong>.<br>Rate your experience:</div>
+    <div class="stars-row" id="s-row">
+      ${[1,2,3,4,5].map(n => `<span class="star" onclick="setStar(${n})">⭐</span>`).join('')}
+    </div>
+    <div id="s-hint" style="font-size:13px;color:var(--t3);min-height:22px;margin-bottom:18px;transition:var(--tr)">Tap a star to rate</div>
+    <div class="f-group">
+      <label class="f-label">Leave a note (optional)</label>
+      <textarea class="f-input" id="r-note" rows="3" placeholder="How was the vibe? Feedback for the venue..."></textarea>
+    </div>
+    <button class="btn btn-p btn-full" style="margin-top:8px" onclick="submitRating('${venueName}')">Submit & Collect Reward 🚀</button>
+    <button class="btn btn-o btn-full" style="margin-top:9px" onclick="closeM()">Skip for now</button>
+  </div>`);
+}
+
+function setStar(n) {
+  _rStar = n;
+  const hints = ['','Terrible 😞','Not great 😕','Okay experience 😐','Good night 😊','Amazing! 🔥'];
+  const cols  = ['','var(--red)','var(--amber)','var(--amber)','var(--green)','var(--purple)'];
+  document.querySelectorAll('#s-row .star').forEach((s, i) => s.classList.toggle('lit', i < n));
+  const hint = document.getElementById('s-hint');
+  hint.textContent = hints[n];
+  hint.style.color  = cols[n];
+}
+
+function submitRating(venueName) {
+  closeM();
+  celebrate();
+  toast('⭐', 'Rating Submitted!', `${venueName} thanks you! Rewards added to wallet`, 's');
+  setTimeout(() => { if (S.role === 'cp') cpTab('earn'); }, 1400);
+}
+
+/* ===================================================================
+   LIVE SEARCH FILTER
+=================================================================== */
+function liveSearch(val) {
+  const v = val.toLowerCase();
+  document.querySelectorAll('.ccard').forEach(card => {
+    const txt = card.textContent.toLowerCase();
+    card.style.display = txt.includes(v) ? '' : 'none';
+  });
+  const visible = [...document.querySelectorAll('.ccard')].filter(c => c.style.display !== 'none');
+  let empty = document.getElementById('search-empty');
+  if (!empty) {
+    empty = document.createElement('div');
+    empty.id = 'search-empty';
+    empty.className = 'empty';
+    empty.innerHTML = `<div class="empty-ico">🔍</div><div class="empty-ttl">No results found</div><div class="empty-sub">Try a different venue name or location</div>`;
+    document.querySelector('.ccard')?.parentNode?.appendChild(empty);
+  }
+  empty.style.display = visible.length === 0 ? 'flex' : 'none';
+}
+
+/* ===================================================================
+   UPDATED: CROWD PARTNER TABS (with skeletons)
+=================================================================== */
+function cpTab(t) {
+  ['home','explore','pass','earn','profile'].forEach(k => {
+    const n = document.getElementById('cpn-' + k);
+    if (n) n.classList.toggle('on', k === t);
+  });
+  const c = document.getElementById('cp-c');
+  c.scrollTop = 0;
+
+  // Show skeleton then real content (except pass & profile — instant)
+  if (t === 'home') {
+    withSkeleton(c, skStats(3) + skCards(3), cpHome);
+  } else if (t === 'explore') {
+    withSkeleton(c, `<div class="skel" style="height:48px;border-radius:10px;margin-bottom:14px"></div>` + skCards(4), cpExplore);
+  } else if (t === 'earn') {
+    withSkeleton(c, skStats(4) + skList(4), cpEarn);
+  } else if (t === 'pass') {
+    c.innerHTML = ''; cpPass(c);
+  } else if (t === 'profile') {
+    c.innerHTML = ''; cpProfile(c);
+  }
+}
+
+/* ===================================================================
+   UPDATED: VENUE TABS (with skeletons + partners)
+=================================================================== */
+function vTab(t) {
+  ['dashboard','create','live','partners','analytics','profile'].forEach(k => {
+    const n = document.getElementById('vn-' + k);
+    if (n) n.classList.toggle('on', k === t);
+  });
+  const c = document.getElementById('v-c');
+  c.scrollTop = 0;
+
+  if (t === 'dashboard') {
+    withSkeleton(c, skStats(4) + skCards(3), vDash);
+  } else if (t === 'analytics') {
+    withSkeleton(c, skStats(4) + skStats(4), vAnalytics);
+  } else if (t === 'partners') {
+    withSkeleton(c, skList(5), vPartners);
+  } else if (t === 'create') {
+    c.innerHTML = ''; vCreate(c);
+  } else if (t === 'live') {
+    c.innerHTML = ''; vLive(c);
+  } else if (t === 'profile') {
+    c.innerHTML = ''; vProfile(c);
+  }
+}
+
+/* ===================================================================
+   UPDATED: ADMIN TABS (with skeletons + reports)
+=================================================================== */
+function aTab(t) {
+  ['overview','users','venues','campaigns','reports','activity'].forEach(k => {
+    const n = document.getElementById('an-' + k);
+    if (n) n.classList.toggle('on', k === t);
+  });
+  const c = document.getElementById('a-c');
+  c.scrollTop = 0;
+
+  if (t === 'overview') {
+    withSkeleton(c, skStats(4) + skStats(4) + skList(3), aOverview);
+  } else if (t === 'users') {
+    withSkeleton(c, `<div class="skel" style="height:48px;border-radius:10px;margin-bottom:14px"></div>` + skList(6), aUsers);
+  } else if (t === 'venues') {
+    withSkeleton(c, skList(5), aVenues);
+  } else if (t === 'campaigns') {
+    withSkeleton(c, skCards(4), aCampaigns);
+  } else if (t === 'reports') {
+    c.innerHTML = ''; aReports(c);
+  } else if (t === 'activity') {
+    c.innerHTML = ''; aActivity(c);
+  }
+}
+
+/* ===================================================================
+   UPDATED: joinC — with celebration
+=================================================================== */
+function joinC(id) {
+  const c = MK.campaigns.find(x => x.id === id);
+  if (!c) return;
+  c.joined = Math.min(c.joined + 1, c.req);
+  celebrate();
+  toast('🎉', `Joined: ${c.venue}!`, 'Your QR pass is ready — check it now', 's');
+  setTimeout(() => { if (S.role === 'cp') cpTab('pass'); }, 1400);
+}
+
+/* ===================================================================
+   CP EXPLORE (enhanced with live search + map)
+=================================================================== */
+function cpExplore(el) {
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-ttl" style="margin-bottom:14px">Explore Campaigns</div>
+    <input type="text" class="f-input" placeholder="🔍  Search venues or cities..." style="margin-bottom:14px" oninput="liveSearch(this.value)">
+    <div class="map-ph" style="margin-bottom:14px">
+      <div class="map-pin">📍</div>
+      <div style="font-size:12px;color:var(--t2);font-weight:500;z-index:1">Delhi NCR · Geolocation active</div>
+      <div style="font-size:10.5px;color:var(--t3);z-index:1">Showing results within 12 km</div>
+    </div>
+    <div class="chips" style="margin-bottom:18px">
+      ${['All','🔴 Live','Delhi NCR','Tonight','Weekend','💑 Couples','👩 Ladies','👥 Groups','Top Rated'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+    ${MK.campaigns.map(c => ccardHTML(c)).join('')}
+    <div style="text-align:center;padding:22px 0;color:var(--t3);font-size:12.5px">✦ All nearby campaigns shown ✦</div>
+  </div>`;
+}
+
+/* ===================================================================
+   CP PASS (enhanced with ring timer)
+=================================================================== */
+function cpPass(el) {
+  const pid = 'VF-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+  const totalSecs = 5400; // 90 mins
+  el.innerHTML = `
+  <div style="padding:22px 0 10px;text-align:center">
+    <div style="font-family:var(--fd);font-size:22px;font-weight:600">Active Entry Pass</div>
+    <div style="color:var(--t2);font-size:13px;margin-top:4px">Session live · Noir Lounge</div>
+  </div>
+  <div class="pass-card">
+    <div class="pass-venue">Noir Lounge</div>
+    <div style="color:var(--t2);font-size:13px;margin-top:3px">Connaught Place, New Delhi</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px">
+      <span class="pulse"></span>
+      <span style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:.8px;text-transform:uppercase">Session Active</span>
+    </div>
+    <!-- Ring Timer -->
+    <div class="ring-wrap">
+      <svg class="ring-svg" width="120" height="120" viewBox="0 0 120 120">
+        <circle class="ring-bg" cx="60" cy="60" r="52"/>
+        <circle class="ring-fill" id="ring-c" cx="60" cy="60" r="52" stroke-dashoffset="0"/>
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div class="ptimer" id="p-tmr" style="font-size:28px;margin:0">--:--</div>
+        <div style="font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-top:2px">remaining</div>
+      </div>
+    </div>
+    <!-- QR Code -->
+    <div class="qr-wrap" id="qr-host" style="min-width:176px;min-height:176px">
+      <div class="qrc qtl"></div><div class="qrc qtr"></div>
+      <div class="qrc qbl"></div><div class="qrc qbr"></div>
+    </div>
+    <div class="pass-id">${pid}</div>
+    <div class="pi-g">
+      <div class="pi-c"><div class="pi-l">Check-in</div><div class="pi-v">9:43 PM</div></div>
+      <div class="pi-c"><div class="pi-l">Min Stay</div><div class="pi-v">90 mins</div></div>
+      <div class="pi-c"><div class="pi-l">Offer</div><div class="pi-v">🍹 2 Cocktails</div></div>
+      <div class="pi-c"><div class="pi-l">Status</div><div class="pi-v" style="color:var(--green)">✓ Valid</div></div>
+    </div>
+  </div>
+  <div style="padding:18px 16px 28px;display:flex;flex-direction:column;gap:10px">
+    <button class="btn btn-p btn-full" onclick="toast('📤','Pass Shared!','Entry QR copied to clipboard','s')">📤 Share Pass</button>
+    <button class="btn btn-g btn-full" onclick="openRating('Noir Lounge')">✅ Simulate Session End</button>
+    <button class="btn btn-o btn-full" onclick="toast('❓','Support','Chat with VibeFill support','i')">❓ Need Help?</button>
+  </div>`;
+  drawQR(pid);
+  startTimer(totalSecs);
+}
+
+/* ===================================================================
+   TIMER (with ring progress)
+=================================================================== */
+function startTimer(total) {
+  if (S.timerInt) clearInterval(S.timerInt);
+  S.timerSecs = total;
+  const circumference = 2 * Math.PI * 52; // 326.7
+  S.timerInt = setInterval(() => {
+    S.timerSecs = Math.max(0, S.timerSecs - 1);
+    const m = Math.floor(S.timerSecs / 60), s = S.timerSecs % 60;
+    const tmr = document.getElementById('p-tmr');
+    const ring = document.getElementById('ring-c');
+    if (!tmr) { clearInterval(S.timerInt); return; }
+    tmr.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (ring) {
+      const progress = (total - S.timerSecs) / total;
+      ring.style.strokeDashoffset = circumference * (1 - progress);
+    }
+    if (S.timerSecs === 0) {
+      clearInterval(S.timerInt);
+      setTimeout(() => openRating('Noir Lounge'), 600);
+    }
+  }, 1000);
+}
+
+/* ===================================================================
+   VENUE PARTNERS TAB
+=================================================================== */
+function vPartners(el) {
+  const partners = MK.users.filter(u => u.status === 'active' || u.status === 'pending');
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-hdr">
+      <div class="sec-ttl">Partner Management</div>
+      <span class="badge b-g">${partners.length} partners</span>
+    </div>
+    <div class="stats-g stats-3" style="margin-bottom:16px">
+      <div class="sc"><div class="sv sv-g">6</div><div class="sl">Active Now</div></div>
+      <div class="sc"><div class="sv sv-p">${partners.length}</div><div class="sl">Total Tonight</div></div>
+      <div class="sc"><div class="sv sv-a">4.7</div><div class="sl">Avg Rating</div></div>
+    </div>
+    <input type="text" class="f-input" placeholder="🔍  Search partners..." style="margin-bottom:12px" oninput="filterPartners(this.value)">
+    <div class="chips" style="margin-bottom:14px">
+      ${['All','Active','Checked In','Female','Male'].map((ch,i) => `<div class="chip${i===0?' on':''}" onclick="fc(this)">${ch}</div>`).join('')}
+    </div>
+    <div class="card" id="partner-list">
+      ${partners.map(u => partnerRow(u)).join('')}
+    </div>
+    <div style="margin-top:14px;padding:15px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)">
+      <div style="font-weight:700;font-size:13.5px;margin-bottom:8px">📊 Crowd Quality Score</div>
+      <div style="font-size:12.5px;color:var(--t2);margin-bottom:12px">Tonight's average partner reliability: <strong style="color:var(--green)">94%</strong></div>
+      <div class="pbar" style="height:8px"><div class="pfill" style="width:94%"></div></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function partnerRow(u) {
+  const statusBadge = u.status === 'active'
+    ? `<span class="badge b-g" style="font-size:9px">Active</span>`
+    : `<span class="badge b-a" style="font-size:9px">Pending</span>`;
+  return `<div class="lr" id="pr-${u.id}">
+    <div style="width:44px;height:44px;border-radius:13px;background:${u.gender==='F'?'var(--pink-g)':'var(--purple-g)'};display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0">${u.ava}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-weight:600;font-size:14px">${u.name}</div>
+      <div style="font-size:11px;color:var(--t2)">${u.handle} · ${u.gender==='F'?'♀ Female':'♂ Male'} · ${u.city}</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:2px">⭐ ${u.rating || '—'} · ${u.sessions} sessions</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+      ${statusBadge}
+      <button class="btn btn-o btn-sm" style="padding:5px 10px;font-size:10px" onclick="viewUser('${u.id}')">View</button>
+    </div>
+  </div>`;
+}
+
+function filterPartners(val) {
+  const v = val.toLowerCase();
+  document.querySelectorAll('[id^="pr-"]').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(v) ? '' : 'none';
+  });
+}
+
+/* ===================================================================
+   ADMIN REPORTS & BLACKLIST
+=================================================================== */
+const MK_reports = [
+  { id:'r1', from:'Aanya Sharma',  against:'Riya Verma',   reason:'No-show 3 consecutive times without notice', date:'Jun 5', status:'open',     severity:'high'   },
+  { id:'r2', from:'Noir Lounge',   against:'Kabir Singh',  reason:'Disruptive behaviour — asked to leave early', date:'Jun 4', status:'open',     severity:'medium' },
+  { id:'r3', from:'KAMA',          against:'Unknown',      reason:'Fake QR pass attempt detected at entry',       date:'Jun 3', status:'resolved', severity:'high'   },
+  { id:'r4', from:'The Penthouse', against:'Arjun Nair',   reason:'Late arrival (>30 min) without communication', date:'Jun 1', status:'resolved', severity:'low'    }
+];
+const MK_blacklist = [
+  { id:'b1', name:'Riya Verma',  handle:'@riya_v',  reason:'3x no-show',          date:'Jun 5', ava:'👩' },
+  { id:'b2', name:'Test Account',handle:'@testx99',  reason:'Fake identity',        date:'May 28',ava:'🤖' },
+  { id:'b3', name:'Spam Bot',    handle:'@spambot1', reason:'Automated fake joins', date:'May 20',ava:'⚠️' }
+];
+
+function aReports(el) {
+  const open = MK_reports.filter(r => r.status === 'open').length;
+  el.innerHTML = `
+  <div class="sec">
+    <div class="sec-hdr">
+      <div class="sec-ttl">Reports & Disputes</div>
+      <span class="badge b-r">${open} open</span>
+    </div>
+    <div class="chips" style="margin-bottom:16px">
+      ${['All','Open','Resolved','Blacklist'].map((ch,i) => `<div class="chip${i===0?' on':''}" id="rchip-${i}" onclick="switchReportView(${i},this)">${ch}</div>`).join('')}
+    </div>
+    <div id="reports-body">
+      ${renderReports('all')}
+    </div>
+    <div style="margin-top:16px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)">
+      <div style="font-weight:700;font-size:13.5px;margin-bottom:6px">🤖 Auto-Trust System</div>
+      <div style="font-size:12.5px;color:var(--t2);line-height:1.6">Users with <strong>3+ verified reports</strong> are auto-flagged. Venues with <strong>2+ disputes</strong> require review. Powered by VibeFill Trust Engine™</div>
+    </div>
+    <div style="height:20px"></div>
+  </div>`;
+}
+
+function switchReportView(idx, btn) {
+  document.querySelectorAll('[id^="rchip-"]').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  const views = ['all','open','resolved','blacklist'];
+  document.getElementById('reports-body').innerHTML = renderReports(views[idx]);
+}
+
+function renderReports(filter) {
+  if (filter === 'blacklist') {
+    if (MK_blacklist.length === 0) return `<div class="empty"><div class="empty-ico">✅</div><div class="empty-ttl">No blacklisted users</div><div class="empty-sub">Clean record! All users are in good standing.</div></div>`;
+    return MK_blacklist.map(b => `
+    <div class="bl-card">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:44px;height:44px;border-radius:13px;background:var(--red-g);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${b.ava}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:14px;color:var(--red)">${b.name}</div>
+          <div style="font-size:11.5px;color:var(--t2)">${b.handle} · Banned ${b.date}</div>
+          <div style="font-size:11.5px;color:var(--t3);margin-top:3px">${b.reason}</div>
+        </div>
+        <button class="btn btn-success btn-sm" style="padding:6px 10px;font-size:10px" onclick="unblacklistUser('${b.id}')">Unban</button>
+      </div>
+    </div>`).join('');
+  }
+  const filtered = filter === 'all' ? MK_reports : MK_reports.filter(r => r.status === filter);
+  if (filtered.length === 0) return `<div class="empty"><div class="empty-ico">🎉</div><div class="empty-ttl">No reports here</div><div class="empty-sub">All clear in this category.</div></div>`;
+  return filtered.map(r => `
+  <div style="background:var(--bg2);border:1px solid ${r.status==='open'?'rgba(248,113,113,.18)':'var(--border)'};border-radius:var(--r);padding:15px;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+      <div>
+        <div style="font-weight:700;font-size:14.5px">${r.against}</div>
+        <div style="font-size:12px;color:var(--t2);margin-top:3px">${r.reason}</div>
+        <div style="font-size:10.5px;color:var(--t3);margin-top:4px">Reported by <strong>${r.from}</strong> · ${r.date}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+        <span class="badge ${r.status==='open'?'b-r':'b-g'}">${r.status}</span>
+        <span class="badge ${r.severity==='high'?'b-r':r.severity==='medium'?'b-a':'b-c'}" style="font-size:9px">${r.severity}</span>
+      </div>
+    </div>
+    ${r.status === 'open' ? `
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:6px">
+      <button class="btn btn-danger btn-sm" onclick="resolveReport('${r.id}','block')">🚫 Block User</button>
+      <button class="btn btn-g btn-sm" onclick="resolveReport('${r.id}','warn')">⚠️ Send Warning</button>
+      <button class="btn btn-o btn-sm" onclick="resolveReport('${r.id}','dismiss')">✗ Dismiss</button>
+    </div>` : ''}
+  </div>`).join('');
+}
+
+function resolveReport(id, action) {
+  const r = MK_reports.find(x => x.id === id);
+  if (r) {
+    r.status = 'resolved';
+    const msgs = {
+      block:   '🚫 User blocked — report marked resolved',
+      warn:    '⚠️ Warning email sent to user',
+      dismiss: '✗ Report dismissed — no action taken'
+    };
+    toast('✅', 'Report Updated', msgs[action], action === 'dismiss' ? 'w' : 's');
+    if (action === 'block') {
+      const u = MK.users.find(x => x.name.toLowerCase().includes(r.against.toLowerCase()));
+      if (u) u.status = 'blocked';
+    }
+    aReports(document.getElementById('a-c'));
+  }
+}
+
+function unblacklistUser(id) {
+  const idx = MK_blacklist.findIndex(x => x.id === id);
+  if (idx > -1) {
+    const name = MK_blacklist[idx].name;
+    MK_blacklist.splice(idx, 1);
+    toast('✅', name + ' Unbanned', 'User access has been restored', 's');
+    aReports(document.getElementById('a-c'));
+  }
+}
+
+/* ===================================================================
+   QR CANVAS RENDERER
+=================================================================== */
+function drawQR(pid) {
+  setTimeout(() => {
+    const host = document.getElementById('qr-host');
+    if (!host) return;
+    const size = 160;
+    const cv   = document.createElement('canvas');
+    cv.width = size; cv.height = size;
+    const ctx  = cv.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#1a0828';
+    const cs = 7.2;
+    const blocks = [
+      [1,1,7,7],[13,1,7,7],[1,13,7,7],[2,2,5,5],[14,2,5,5],[2,14,5,5],
+      [3,3,3,3],[15,3,3,3],[3,15,3,3],[9,1,4,1],[1,9,1,4],[14,9,1,4],
+      [9,14,4,1],[10,5,1,5],[5,10,5,1],[8,8,6,6],[9,9,4,4],[10,10,2,2],
+      [11,6,1,2],[6,11,2,1],[13,9,1,4],[9,13,4,1]
+    ];
+    blocks.forEach(([x,y,w,h]) => ctx.fillRect(x*cs+2, y*cs+2, w*cs, h*cs));
+    host.appendChild(cv);
+  }, 80);
+}
+
+/* ===================================================================
+   ADMIN PROFILE MODAL
+=================================================================== */
+function openAdminProfile() {
+  openMod(`
+  <div style="text-align:center;padding-bottom:6px">
+    <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--cyan),var(--green));border-radius:26px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:#fff;box-shadow:0 0 32px rgba(34,211,238,.3)">AD</div>
+    <div style="font-family:var(--fd);font-size:28px;font-weight:600">Platform Admin</div>
+    <div style="font-size:13px;color:var(--t2);margin-top:4px">admin@vibefill.com</div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-top:12px">
+      <span class="badge b-c">Super Admin</span>
+      <span class="badge b-g">Full Access</span>
+    </div>
+  </div>
+  <div class="glow-div" style="margin:20px 0"></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;text-align:center">
+      <div style="font-family:var(--fn);font-size:28px;color:var(--cyan)">38</div>
+      <div style="font-size:10.5px;color:var(--t2);margin-top:2px">Venues</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;text-align:center">
+      <div style="font-family:var(--fn);font-size:28px;color:var(--purple)">1.2K</div>
+      <div style="font-size:10.5px;color:var(--t2);margin-top:2px">Users</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:14px;text-align:center">
+      <div style="font-family:var(--fn);font-size:28px;color:var(--green)">2.8K</div>
+      <div style="font-size:10.5px;color:var(--t2);margin-top:2px">Sessions</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    ${[
+      { ico:'⚙️',  lbl:'System Settings',     sub:'Platform config & feature flags' },
+      { ico:'🔐',  lbl:'Security & Access',    sub:'2FA, API keys, team members' },
+      { ico:'📧',  lbl:'Email & Notifications',sub:'System alerts & digest settings' },
+      { ico:'🧾',  lbl:'Billing & Invoices',   sub:'Subscription plan & invoices' },
+      { ico:'📜',  lbl:'Audit Logs',           sub:'Admin action history' },
+    ].map(it => `
+    <div class="lr" style="cursor:pointer" onclick="toast('🔧','${it.lbl}','Available in production build','i')">
+      <div style="width:38px;height:38px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px">${it.ico}</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:500">${it.lbl}</div><div style="font-size:11.5px;color:var(--t2)">${it.sub}</div></div>
+      <span style="color:var(--t4);font-size:18px">›</span>
+    </div>`).join('')}
+  </div>
+  <button class="btn btn-full" onclick="adminLogout()" style="background:var(--red-g);border:1px solid rgba(248,113,113,.28);color:var(--red);font-size:15px;font-weight:700;padding:15px;border-radius:var(--rs);margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:9px;transition:all .22s ease">
+    🚪 Sign Out of Admin Console
+  </button>
+  <button class="btn btn-o btn-full" onclick="closeM()">Cancel</button>`);
+}
+
+function adminLogout() {
+  closeM();
+  // Clear any running intervals
+  if (S.timerInt) { clearInterval(S.timerInt); S.timerInt = null; }
+  S.role = null;
+  toast('👋', 'Signed out', 'You have been logged out of Admin Console', 'i');
+  setTimeout(() => nav('auth'), 800);
+}
+
+function openAdminNotif() {
+  openMod(`
+  <div class="mttl">Admin Alerts</div>
+  ${[
+    { ico:'⚠️', bg:'var(--red-g)',    ttl:'2 Open Reports',          txt:'Riya Verma & Kabir Singh have unresolved reports pending review.', time:'5 min ago',  type:'e' },
+    { ico:'🏛️', bg:'var(--amber-g)', ttl:'Venue Pending Approval',   txt:'Skyline Bar (Gurgaon) submitted verification documents.', time:'22 min ago', type:'w' },
+    { ico:'💰', bg:'var(--green-g)',  ttl:'Weekly Payouts Processed', txt:'₹42,000 sent to 24 crowd partners. All transactions cleared.', time:'1 hr ago',  type:'s' },
+    { ico:'📊', bg:'var(--cyan-g)',   ttl:'Milestone: 500 Sessions',  txt:'VibeFill has crossed 500 total completed sessions. 🎉',            time:'2 hr ago',  type:'i' },
+    { ico:'👤', bg:'var(--purple-g)','ttl':'New User Spike',          txt:'47 new registrations in the last 24 hours — up 85% WoW.',         time:'Today',     type:'i' },
+  ].map(n => `
+  <div style="display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--border)">
+    <div style="width:44px;height:44px;border-radius:13px;background:${n.bg};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${n.ico}</div>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:14px">${n.ttl}</div>
+      <div style="font-size:12.5px;color:var(--t2);margin-top:4px;line-height:1.55">${n.txt}</div>
+      <div style="font-size:10.5px;color:var(--t4);margin-top:5px">${n.time}</div>
+    </div>
+  </div>`).join('')}
+  <button class="btn btn-o btn-full" style="margin-top:18px" onclick="closeM()">Dismiss All</button>`);
+}
+
+/* ===================================================================
    INIT
 =================================================================== */
 window.addEventListener('load', () => {
-  // Show splash then auto-navigate to auth
   setTimeout(() => nav('auth'), 1900);
 });
 </script>
